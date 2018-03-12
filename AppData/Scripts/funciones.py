@@ -21,9 +21,9 @@ class base_datos():
                     columns.append(self.datos.columns[i]+str(i))
         self.datos.columns=columns
         for j in self.datos.columns: #Funcion para cambiar los nan por 0's que serian los espacios en blanco
-            for i in range(0,np.shape(d)[0],1):
+            for i in range(0,np.shape(self.datos)[0],1):
                 if (str(self.datos.at[i,j])=='nan'):
-                    self.datos.at[i,j]=0
+                    self.datos.at[i,j]=" "
         return self.datos
 
     def conversion_excel(self):
