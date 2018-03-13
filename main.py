@@ -5,6 +5,8 @@ class software_DIS(tk.Frame):
     def __init__(self,master=None):
         tk.Frame.__init__(self,master)
         self.menu_principal()
+        #self.grid_remove()
+
 
     def menu_principal(self):
         self.widgets_menu_principal()
