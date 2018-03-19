@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -51,7 +52,7 @@ class Application(tk.Frame):
 
     def resultado_consulta(self):
         if(len(self.lista_pozos.get()) == 0):# or len(self.lista_categorias.get()) == 0):
-            messagebox.showerror("Error en la consulta","Digite los datos faltantes para realizar la \n la consulta en la base de datos")
+            messagebox.showerror("Error en la consulta","Digite los datos faltantes para realizar la \nla consulta en la base de datos")
         else:
             pozo=self.lista_pozos.get()
             self.consulta.destroy()
@@ -59,8 +60,8 @@ class Application(tk.Frame):
             self.resultado.title("Resultado de la consulta del pozo: "+ pozo)
             self.resultado.geometry("800x600+50+20")
             self.resultado.grid()
-            busqueda=self.clase_base_de_datos.get_valores_pozo(pozo)
-            busqueda_to_dataframe = pd.DataFrame(data=busqueda[1:][:],columns=busqueda[0][:])
+            busqueda=np.asarray(self.clase_base_de_datos.get_valores_pozo(pozo))
+            busqueda_to_dataframe = pd.DataFrame(data=busqueda[1:,:],columns=busqueda[0,:])
             self.table = Table(self.resultado,dataframe=busqueda_to_dataframe,showstatusbar=False,showtoolbar=False) #Con este table puedo mostrar la tabla de consulta
             self.table.show()
 
@@ -74,6 +75,9 @@ class Application(tk.Frame):
             self.analogia.rowconfigure(i, weight=1)
         for i in range(0, 6):
             self.analogia.columnconfigure(i, weight=1)
+        self.imagen = tk.PhotoImage(file="AppData/Images/ecopetrol_bg.gif")
+        self.fondo = tk.Label(self.analogia,image=self.imagen)
+        self.fondo.grid(row=0,column=0,rowspan=11,columnspan=6,sticky=tk.S+tk.N+tk.W+tk.E)
         self.nombre_pozo = tk.Label(self.analogia, text="Nombre del pozo:", bg="#fff", relief="groove")
         self.propiedades = tk.Label(self.analogia, text="Propiedades para analogia", bg="#fff", relief="groove")
         self.unidades = tk.Label(self.analogia, text="Unidades", bg="#fff", relief="groove")
@@ -81,7 +85,16 @@ class Application(tk.Frame):
         self.min = tk.Label(self.analogia, text="Valor minimo", bg="#fff", relief="groove")
         self.max = tk.Label(self.analogia, text="Valor maximo", bg="#fff", relief="groove")
         self.ponderacion = tk.Label(self.analogia, text="Ponderacion", bg="#fff", relief="groove")
+        self.nombre_pozo.grid(row=0, column=0, columnspan=3, sticky=tk.N + tk.S + tk.E)
+        self.propiedades.grid(row=1, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.unidades.grid(row=1, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.puntual.grid(row=1, column=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.min.grid(row=1, column=3, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.max.grid(row=1, column=4, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.ponderacion.grid(row=1, column=5, sticky=tk.N + tk.S + tk.W + tk.E)
         propi_unida = self.clase_base_de_datos.lista_propiedades_analogia() #Obtengo la matriz con las propiedades y unidades
+        for i in range(0,len(propi_unida)):
+            
 
 
 
