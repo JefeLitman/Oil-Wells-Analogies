@@ -45,16 +45,17 @@ class base_datos():
         categorias=list(set(categorias))
         return categorias
 
-    def get_valores_pozoxcategoria(self,pozo,categoria):
-        cols=[]
+    def get_valores_pozo(self,pozo): #Funcion que retorna una matriz todos los valores del pozo mandado
+        categorias = self.get_categorias()
+        cols=[0,1]
         for i in range(0,self.datos.shape[1],1):
             if (self.datos.at[0, i] == pozo):
                 cols.append(i)
         cats=[1]
-        for i in range(0,self.datos.shape[0],1):
-            if (self.datos.at[i, 0] == categoria):
-                cats.append(i)
-                cats.append(i)
+        for categoria in categorias:
+            for i in range(0,self.datos.shape[0],1):
+                if (self.datos.at[i, 0] == categoria):
+                    cats.append(i)
         busqueda = []
         for i in cats:
             fila = []
