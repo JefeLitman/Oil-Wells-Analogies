@@ -1,7 +1,9 @@
+import pandas as pd
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from AppData.Scripts.funciones import base_datos as bd
+from pandastable import Table
 
 class Application(tk.Frame):
     def __init__(self,master=None):
@@ -38,18 +40,13 @@ class Application(tk.Frame):
         self.consulta.grid()
         self.consulta.rowconfigure(0,weight=1)
         self.consulta.rowconfigure(1,weight=1)
-        #self.consulta.rowconfigure(2,weight=1)
         self.consulta.columnconfigure(0,weight=1)
         self.consulta.columnconfigure(1,weight=3)
         self.label_pozo=tk.Label(self.consulta,text="Seleccione un pozo:")
-        #self.label_categoria=tk.Label(self.consulta,text="Seleccione una categoria:")
         self.lista_pozos=ttk.Combobox(self.consulta,state="readonly",values=self.clase_base_de_datos.get_pozos())
-        #self.lista_categorias=ttk.Combobox(self.consulta,state="readonly",values=self.clase_base_de_datos.get_categorias())
         self.boton_consultar=tk.Button(self.consulta,text="Consultar",command=self.resultado_consulta)
         self.label_pozo.grid(row=0,column=0)
-        #self.label_categoria.grid(row=1,column=0)
         self.lista_pozos.grid(row=0,column=1,sticky=tk.E+tk.W)
-        #self.lista_categorias.grid(row=1,column=1,sticky=tk.E+tk.W)
         self.boton_consultar.grid(row=1,column=0,columnspan=2)
 
     def resultado_consulta(self):
@@ -57,41 +54,37 @@ class Application(tk.Frame):
             messagebox.showerror("Error en la consulta","Digite los datos faltantes para realizar la \n la consulta en la base de datos")
         else:
             pozo=self.lista_pozos.get()
-            #categoria=self.lista_categorias.get()
             self.consulta.destroy()
             self.resultado = tk.Toplevel()
             self.resultado.title("Resultado de la consulta del pozo: "+ pozo)
             self.resultado.geometry("800x600+50+20")
-            self.resultado.resizable(0,0)
             self.resultado.grid()
-            self.imagen=tk.PhotoImage(file="AppData/Images/ecopetrol_bg.gif")
-            self.fondo = tk.Label(self.resultado, image=self.imagen)
-            #busqueda=self.clase_base_de_datos.get_valores_pozoxcategoria(pozo,categoria)
-            #for i in range(0,len(busqueda),1):
-            #    self.rowconfigure(i,weight=1)
-            #self.columnconfigure(0,weight=1)
-            #self.columnconfigure(1, weight=3)
-            #self.columnconfigure(2, weight=2)
-            #self.columnconfigure(3, weight=1)
-            #ruedaY=tk.Scrollbar(self.resultado, orient=tk.VERTICAL)
-            #lista_unidades=tk.Listbox(self.resultado,yscrollcommand=ruedaY.set)
-            #lista_valores=tk.Listbox(self.resultado,yscrollcommand=ruedaY.set)
-            #lista_fechas=tk.Listbox(self.resultado,yscrollcommand=ruedaY.set)
-            #ruedaY['command'] = lista_unidades.yview
-            #ruedaY['command'] = lista_valores.yview
-            #ruedaY['command'] = lista_fechas.yview
-            #for i in range(0,len(busqueda),1):
-            #    lista_unidades.insert(tk.END,busqueda[i][0])
-            #   lista_valores.insert(tk.END, busqueda[i][1])
-            #    lista_fechas.insert(tk.END, busqueda[i][2])
-            #lista_unidades.grid(row=0,column=0,rowspan=len(busqueda),sticky=tk.N+tk.S+tk.W+tk.W)
-            #lista_valores.grid(row=0,column=1,rowspan=len(busqueda),sticky=tk.N+tk.S+tk.W+tk.W)
-            #lista_fechas.grid(row=0,column=2,rowspan=len(busqueda),sticky=tk.N+tk.S+tk.W+tk.W)
-            #ruedaY.grid(row=0,column=3,rowspan=len(busqueda),sticky=tk.N+tk.S)
-            self.fondo.grid(row=0, column=0, sticky=tk.S + tk.N + tk.W + tk.E)
+            busqueda=self.clase_base_de_datos.get_valores_pozo(pozo)
+            busqueda_to_dataframe = pd.DataFrame(data=busqueda[1:][:],columns=busqueda[0][:])
+            self.table = Table(self.resultado,dataframe=busqueda_to_dataframe,showstatusbar=False,showtoolbar=False) #Con este table puedo mostrar la tabla de consulta
+            self.table.show()
 
     def ventana_analogia(self):
-        pass
+        self.analogia = tk.Toplevel()
+        self.analogia.title("Modulo para realizar analogia de un nuevo pozo")
+        self.analogia.geometry("800x600+50+20")
+        self.analogia.resizable(0, 0)
+        self.analogia.grid()
+        for i in range(0, 11):
+            self.analogia.rowconfigure(i, weight=1)
+        for i in range(0, 6):
+            self.analogia.columnconfigure(i, weight=1)
+        self.nombre_pozo = tk.Label(self.analogia, text="Nombre del pozo:", bg="#fff", relief="groove")
+        self.propiedades = tk.Label(self.analogia, text="Propiedades para analogia", bg="#fff", relief="groove")
+        self.unidades = tk.Label(self.analogia, text="Unidades", bg="#fff", relief="groove")
+        self.puntual = tk.Label(self.analogia, text="Valor puntual", bg="#fff", relief="groove")
+        self.min = tk.Label(self.analogia, text="Valor minimo", bg="#fff", relief="groove")
+        self.max = tk.Label(self.analogia, text="Valor maximo", bg="#fff", relief="groove")
+        self.ponderacion = tk.Label(self.analogia, text="Ponderacion", bg="#fff", relief="groove")
+        propi_unida = self.clase_base_de_datos.lista_propiedades_analogia() #Obtengo la matriz con las propiedades y unidades
+
+
+
 
 app=Application()
 app.master.title("SOFTWARE D.I.S")

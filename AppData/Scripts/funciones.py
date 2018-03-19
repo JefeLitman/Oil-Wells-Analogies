@@ -63,3 +63,19 @@ class base_datos():
                 fila.append(self.datos.at[i, j])
             busqueda.append(fila)
         return busqueda
+
+    def lista_propiedades_analogia(self):
+        propiedades = [
+            "Viscosidad del crudo",
+            "Espesor neto",
+            "Gravedad API del crudo",
+            "Permeabilidad",
+            "Porosidad",
+            "Presion del yacimiento al inicio del proyecto"
+        ]
+        unidades=[]
+        for i in range(2,len(self.datos[1].values)):
+            if (self.datos.at[i,1] in propiedades):
+                unidades.append(self.datos.at[i,2])
+        propi_unida = [propiedades,unidades]
+        return propi_unida
