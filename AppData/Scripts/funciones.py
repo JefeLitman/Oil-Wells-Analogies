@@ -25,7 +25,7 @@ class base_datos():
         for j in self.datos.columns: #Funcion para cambiar los nan por " " que serian los espacios en blanco
             for i in range(0,np.shape(self.datos)[0],1):
                 if (str(self.datos.at[i,j])=='nan'):
-                    self.datos.at[i,j]=" "
+                    self.datos.at[i,j]=""
         return self.datos # Retorno de los datos ordenados y arreglados
 
     def conversion_excel(self):
@@ -64,18 +64,47 @@ class base_datos():
             busqueda.append(fila)
         return busqueda
 
-    def lista_propiedades_analogia(self):
+    def lista_propiedades_analogia(self): #Funcion que retorna las propiedades y unidades para realizar la analogia
         propiedades = [
             "Viscosidad del crudo",
             "Espesor neto",
             "Gravedad API del crudo",
             "Permeabilidad",
             "Porosidad",
-            "Presion del yacimiento al inicio del proyecto"
+            "Presion del yacimiento al inicio del proyecto",
+            "Temperatura del yacimiento",
+            "Profundidad"
         ]
-        unidades=[]
-        for i in range(2,len(self.datos[1].values)):
-            if (self.datos.at[i,1] in propiedades):
-                unidades.append(self.datos.at[i,2])
+        unidades=[
+            'cp',
+            'ft',
+            '°API',
+            'md',
+            '%',
+            'psi',
+            "°F",
+            "ft"
+        ]
         propi_unida = [propiedades,unidades]
         return propi_unida
+
+    def get_matrix_valores_comparacion(self,filas_llenadas,valor_puntual): #Funcion que retorna los valores en la base
+        #de datos para tener los valores teoricos a realizar la comparacion
+        propiedades=self.lista_propiedades_analogia()[0]
+        matrix_valores=[]
+        for i in range(1+len(filas_llenadas)):
+            fila = []
+            for j in range(1 + len(self.get_pozos())):
+                if (j == 0 and i == 0):
+                    fila.append('Pozo')
+                elif (i == 0 and j != 0):
+                    fila.append(self.get_pozos()[j - 1])
+                elif (j == 0 and i != 0):
+                    fila.append(propiedades[filas_llenadas[i - 1]])
+                else:
+                    pass #Aqui debera ir agregando los valores para la propiedad i del pozo j
+            matrix_valores.append(fila)
+        return matrix_valores
+
+    def get_valor_propiedad_del_pozo(self,propiedad,pozo):
+        indices
