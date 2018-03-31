@@ -149,7 +149,7 @@ class Application(tk.Frame):
     def calculo_analogia_promedio(self):
         filas_llenadas,valor_puntual,flag = self.comprobar_filas_llenadas()
         if flag:
-            pass
+            matrix_comparar=self.generacion_matrix_nuevo_pozo(filas_llenadas,valor_puntual)
         else:
             messagebox.showerror("Error en la analogia",
                                  "Digite correctamente los datos para realizar la \nla analogia del pozo digitado")
@@ -157,14 +157,14 @@ class Application(tk.Frame):
     def calculo_analogia_jaccard(self):
         filas_llenadas,valor_puntual, flag = self.comprobar_filas_llenadas()
         if flag:
-            pass
+            matrix_comparar = self.generacion_matrix_nuevo_pozo(filas_llenadas, valor_puntual)
         else:
             messagebox.showerror("Error en la analogia",
                                  "Digite correctamente los datos para realizar la \nla analogia del pozo digitado")
 
     def comprobar_filas_llenadas(self):
-        filas_llenadas = []
-        valor_puntual=[]
+        filas_llenadas = [] #En este vector se guarda los indices de las filas que se han llenado en los entry's
+        valor_puntual=[] #En este vector se guarda la informacion si corresponde a un valor puntual o un rango
         if (len(self.campo_nombre_pozo.get())!=0):
             for i in range(0, len(self.matrix_valores[0])):
                 if (len(self.matrix_valores[0][i].get()) != 0 and (
@@ -189,6 +189,25 @@ class Application(tk.Frame):
                 return filas_llenadas, valor_puntual, True
         else:
             return filas_llenadas, valor_puntual, False
+
+    def generacion_matrix_nuevo_pozo(self,filas_llenadas,valor_puntual):
+        matrix_comparar = []
+        for i in range(1 + len(filas_llenadas)):
+            fila = []
+            for j in range(2):
+                if (j == 0 and i == 0):
+                    fila.append('Pozo')
+                elif (i == 0 and j != 0):
+                    fila.append(self.campo_nombre_pozo.get())
+                elif (j == 0 and i != 0):
+                    fila.append(self.clase_base_de_datos.lista_propiedades_analogia()[0][filas_llenadas[i - 1]])
+                else:
+                    if (valor_puntual[i - 1]):
+                        fila.append(float(self.matrix_valores[0][i-1].get()))
+                    else:
+                        fila.append([float(k) for k in range(int(self.matrix_valores[1][i-1].get()),int(self.matrix_valores[2][i-1].get())+1)])
+            matrix_comparar.append(fila)
+        return matrix_comparar
 
 app=Application()
 app.master.title("SOFTWARE D.I.S")

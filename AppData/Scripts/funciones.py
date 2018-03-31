@@ -88,7 +88,7 @@ class base_datos():
         propi_unida = [propiedades,unidades]
         return propi_unida
 
-    def get_matrix_valores_comparacion(self,filas_llenadas,valor_puntual): #Funcion que retorna los valores en la base
+    def get_matrix_valores_comparacion(self,filas_llenadas): #Funcion que retorna los valores en la base
         #de datos para tener los valores teoricos a realizar la comparacion
         propiedades=self.lista_propiedades_analogia()[0]
         matrix_valores=[]
@@ -102,9 +102,31 @@ class base_datos():
                 elif (j == 0 and i != 0):
                     fila.append(propiedades[filas_llenadas[i - 1]])
                 else:
-                    pass #Aqui debera ir agregando los valores para la propiedad i del pozo j
+                    fila.append(self.get_valor_propiedad_del_pozo(fila[0],matrix_valores[0][j]))
             matrix_valores.append(fila)
         return matrix_valores
 
-    def get_valor_propiedad_del_pozo(self,propiedad,pozo):
-        indices
+    def get_valor_propiedad_del_pozo(self,propiedad,pozo): #Funcion que retorna el valor del pozo para determinada propiedad
+        for i in range(self.datos.shape[0]):
+            if(self.datos.at[i,1]==propiedad):
+                indice_fila=i
+        for j in range(3,self.datos.shape[1]-1,3):
+            if (self.datos.at[0, j] == pozo):
+                indice_columna=j
+        if '-' in self.datos.at[indice_fila,indice_columna]:
+            valor_min=''
+            valor_max=''
+            flag=False
+            for x in self.datos.at[indice_fila,indice_columna]:
+                if ((x == '1' or x == '2' or x == '3' or x == '4' or x == '5' or x == '6' or x == '7' or x == '8' or x == '9' or x == '0') and flag==0):
+                    valor_min=valor_min+x
+                elif(x == '-' and flag==0):
+                    flag=True
+                elif((x == '1' or x == '2' or x == '3' or x == '4' or x == '5' or x == '6' or x == '7' or x == '8' or x == '9' or x == '0') and flag):
+                    valor_max=valor_max+x
+            return [float(i) for i in range(int(valor_min),int(valor_max)+1,1)]
+        else:
+            return float(self.datos.at[indice_fila,indice_columna])
+
+    def calculo_diferencias_propiedades(self,matrix_datos,matrix_comparar):
+        pass ##Defino esta funcion para obtener las diferencias y empezar a calcular las analogias

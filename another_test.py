@@ -5,9 +5,8 @@ import numpy as np
 
 base = bd()
 datos=base.cargar_datos()
-filas=[0,7]
-matrix=base.get_matrix_valores_comparacion(filas,None)
-print(matrix)
+for i in base.get_matrix_valores_comparacion([0,7]):
+    print(i)
 
 #pantalla = tk.Tk()
 #for x in tkFont.families():
