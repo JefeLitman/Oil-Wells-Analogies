@@ -40,7 +40,7 @@ class Application(tk.Frame):
     def ventana_consulta(self):
         self.consulta=tk.Toplevel()
         self.consulta.title("Consulta de Pozos existentes")
-        self.consulta.geometry("450x65+50+20")
+        self.consulta.geometry("450x65+100+80")
         self.consulta.resizable(0,0)
         self.consulta.grid()
         self.consulta.config(bg="#fff")
@@ -87,7 +87,7 @@ class Application(tk.Frame):
     def ventana_analogia(self):
         self.analogia = tk.Toplevel()
         self.analogia.title("Modulo para realizar analogia de un nuevo pozo")
-        self.analogia.geometry("800x600+50+20")
+        self.analogia.geometry("800x600+70+30")
         self.analogia.config(bg="#fff")
         self.analogia.grid()
         for i in range(0, 11):
@@ -125,8 +125,8 @@ class Application(tk.Frame):
                 columna.append(valor_ingresar)
             self.matrix_valores.append(columna)
         self.boton_ponderado = tk.Button(self.analogia,text="Establecer Ponderaciones",command=self.set_ponderaciones)
-        self.boton_analogia_promedio = tk.Button(self.analogia,text="Realizar Analogia por Valor Promedio",command=self.calculo_analogia_promedio)
-        self.boton_analogia_jaccard = tk.Button(self.analogia,text="Realizar Analogia por Jaccard",command=self.calculo_analogia_jaccard)
+        self.boton_analogia_promedio = tk.Button(self.analogia,text="Realizar Analogia por Valor Promedio",command=self.resultado_analogia_promedio)
+        self.boton_analogia_jaccard = tk.Button(self.analogia,text="Realizar Analogia por Jaccard",command=self.resultado_analogia_jaccard)
         self.boton_ponderado.grid(row=10,column=0,columnspan=2)
         self.boton_analogia_promedio.grid(row=10,column=2,columnspan=2)
         self.boton_analogia_jaccard.grid(row=10,column=4,columnspan=2)
@@ -141,49 +141,170 @@ class Application(tk.Frame):
             i.insert(0,str(100*1.0/len(columnas_llenar)))
 
     def resultado_analogia_promedio(self):
-        pass
+        self.resultados,self.valores_nuevo_pozo,self.datos_pozos=self.calculo_analogia_promedio()
+        matrix_mostrar=[]
+        for i in range(len(self.datos_pozos[0])+1):
+            fila=[]
+            for j in range(len(self.datos_pozos)+1):
+                if(j==0 and i==0):
+                    fila.append('Puntaje')
+                elif(i==0 and j==1):
+                    fila.append('Pozo')
+                elif(i==0 and j not in [0,1]):
+                    fila.append(self.clase_base_de_datos.lista_propiedades_unidades(self.valores_nuevo_pozo[j-1][i]))
+                elif(i!=0 and j==0):
+                    if(i!=1):
+                        fila.append(str(self.get_valor_resultado(self.resultados,self.datos_pozos[j][i-1])))
+                    else:
+                        fila.append('')
+                elif(i!=0 and j==1):
+                    if(i==1):
+                        fila.append(self.valores_nuevo_pozo[0][i])
+                    else:
+                        fila.append(self.datos_pozos[0][i-1])
+                else:
+                    if(i==1):
+                        fila.append(self.get_valor_to_string(self.valores_nuevo_pozo[j-1][i]))
+                    else:
+                        fila.append(self.get_valor_to_string(self.datos_pozos[j-1][i-1]))
+            matrix_mostrar.append(fila)
+        print(matrix_mostrar)
 
     def resultado_analogia_jaccard(self):
-        pass
+        self.resultados,self.valores_nuevo_pozo,self.datos_pozos=self.calculo_analogia_jaccard()
+        matrix_mostrar = []
+        for i in range(len(self.datos_pozos[0]) + 1):
+            fila = []
+            for j in range(len(self.datos_pozos) + 1):
+                if (j == 0 and i == 0):
+                    fila.append('Puntaje')
+                elif (i == 0 and j == 1):
+                    fila.append('Pozo')
+                elif (i == 0 and j not in [0, 1]):
+                    fila.append(self.clase_base_de_datos.lista_propiedades_unidades(self.valores_nuevo_pozo[j - 1][i]))
+                elif (i != 0 and j == 0):
+                    if (i != 1):
+                        fila.append(str(self.get_valor_resultado(self.resultados, self.datos_pozos[j][i - 1])))
+                    else:
+                        fila.append('')
+                elif (i != 0 and j == 1):
+                    if (i == 1):
+                        fila.append(self.valores_nuevo_pozo[0][i])
+                    else:
+                        fila.append(self.datos_pozos[0][i - 1])
+                else:
+                    if (i == 1):
+                        fila.append(self.get_valor_to_string(self.valores_nuevo_pozo[j - 1][i]))
+                    else:
+                        fila.append(self.get_valor_to_string(self.datos_pozos[j - 1][i - 1]))
+            matrix_mostrar.append(fila)
+        print(matrix_mostrar)
 
     def calculo_analogia_promedio(self):
         filas_llenadas,valor_puntual,flag = self.comprobar_filas_llenadas()
         if flag:
             matrix_comparar=self.generacion_matrix_nuevo_pozo(filas_llenadas,valor_puntual)
+            matrix_datos=self.clase_base_de_datos.get_matrix_valores_comparacion(filas_llenadas)
+            matrix_diferencias=self.clase_base_de_datos.calculo_diferencias_propiedades(matrix_datos,matrix_comparar)
+            matrix_resultado = []
+            for i in range(1 + len(filas_llenadas)):
+                fila = []
+                for j in range(len(matrix_datos[0])):
+                    if (j == 0 and i == 0):
+                        fila.append('Pozo')
+                    elif (i == 0 and j != 0):
+                        fila.append(self.clase_base_de_datos.get_pozos()[j-1])
+                    elif (j == 0 and i != 0):
+                        fila.append(self.clase_base_de_datos.lista_propiedades_analogia()[0][filas_llenadas[i - 1]])
+                    else:
+                        if (type(matrix_comparar[i][1]).__name__ == 'list' and type(
+                                matrix_datos[i][j]).__name__ == 'list'):
+                            AuB = matrix_datos[i][j]
+                            AnB = []
+                            for x in matrix_comparar[i][1]:
+                                if x not in AuB:
+                                    AuB.append(x)
+                                else:
+                                    AnB.append(x)
+                            fila.append(sum(AnB) / sum(AuB))
+                        elif (type(matrix_comparar[i][1]).__name__ == 'list' or type(
+                                matrix_datos[i][j]).__name__ == 'list'):
+                            if (type(matrix_comparar[i][1]).__name__ == 'list'):
+                                fila.append(1.0 if matrix_datos[i][j] in matrix_comparar[i][1] else 0)
+                            else:
+                                fila.append(1.0 if matrix_comparar[i][1] in matrix_datos[i][j] else 0)
+                        else:
+                            fila.append(matrix_diferencias[i][j] / max([matrix_diferencias[i][k] for k in range(1,len(matrix_diferencias[0]))]))
+                matrix_resultado.append(fila)
+            return matrix_resultado,matrix_comparar,matrix_datos
         else:
-            messagebox.showerror("Error en la analogia",
-                                 "Digite correctamente los datos para realizar la \nla analogia del pozo digitado")
+            return messagebox.showerror("Error en la analogia",
+                                 "Digite correctamente los datos para realizar la \nla analogia del pozo digitado"),None,None
 
     def calculo_analogia_jaccard(self):
         filas_llenadas,valor_puntual, flag = self.comprobar_filas_llenadas()
         if flag:
             matrix_comparar = self.generacion_matrix_nuevo_pozo(filas_llenadas, valor_puntual)
+            matrix_datos = self.clase_base_de_datos.get_matrix_valores_comparacion(filas_llenadas)
+            matrix_diferencias = self.clase_base_de_datos.calculo_diferencias_propiedades(matrix_datos, matrix_comparar)
+            matrix_resultado=[]
+            for i in range(1+len(filas_llenadas)):
+                fila=[]
+                for j in range(len(matrix_datos[0])):
+                    if (j == 0 and i == 0):
+                        fila.append('Pozo')
+                    elif (i == 0 and j != 0):
+                        fila.append(self.clase_base_de_datos.get_pozos()[j-1])
+                    elif (j == 0 and i != 0):
+                        fila.append(self.clase_base_de_datos.lista_propiedades_analogia()[0][filas_llenadas[i - 1]])
+                    else:
+                        if(type(matrix_comparar[i][1]).__name__=='list' and type(matrix_datos[i][j]).__name__=='list'):
+                            AuB = matrix_datos[i][j]
+                            AnB = []
+                            for x in matrix_comparar[i][1]:
+                                if x not in AuB:
+                                    AuB.append(x)
+                                else:
+                                    AnB.append(x)
+                            fila.append(sum(AnB)/sum(AuB))
+                        elif(type(matrix_comparar[i][1]).__name__=='list' or type(matrix_datos[i][j]).__name__=='list'):
+                            if(type(matrix_comparar[i][1]).__name__=='list'):
+                                fila.append(1.0 if matrix_datos[i][j] in matrix_comparar[i][1] else 0)
+                            else:
+                                fila.append(1.0 if matrix_comparar[i][1] in matrix_datos[i][j] else 0)
+                        else:
+                            fila.append(1-(matrix_diferencias[i][j]/max([matrix_diferencias[i][k] for k in range(1,len(matrix_diferencias[0]))])))
+                matrix_resultado.append(fila)
+            return matrix_resultado,matrix_comparar,matrix_datos
         else:
-            messagebox.showerror("Error en la analogia",
-                                 "Digite correctamente los datos para realizar la \nla analogia del pozo digitado")
+            return messagebox.showerror("Error en la analogia",
+                                 "Digite correctamente los datos para realizar la \nla analogia del pozo digitado"),None,None
 
     def comprobar_filas_llenadas(self):
         filas_llenadas = [] #En este vector se guarda los indices de las filas que se han llenado en los entry's
         valor_puntual=[] #En este vector se guarda la informacion si corresponde a un valor puntual o un rango
         if (len(self.campo_nombre_pozo.get())!=0):
+            contador_ponderado=0
             for i in range(0, len(self.matrix_valores[0])):
                 if (len(self.matrix_valores[0][i].get()) != 0 and (
                         len(self.matrix_valores[1][i].get()) == 0 and len(self.matrix_valores[2][i].get()) == 0) and len(
                         self.matrix_valores[3][i].get()) != 0):
                     filas_llenadas.append(i)
                     valor_puntual.append(True)
+                    contador_ponderado=contador_ponderado + float(self.matrix_valores[3][i].get())
                 elif (len(self.matrix_valores[0][i].get()) == 0 and (
                         len(self.matrix_valores[1][i].get()) != 0 and len(self.matrix_valores[2][i].get()) != 0) and len(
                         self.matrix_valores[3][i].get()) != 0):
                     filas_llenadas.append(i)
                     valor_puntual.append(False)
+                    contador_ponderado = contador_ponderado + float(self.matrix_valores[3][i].get())
                 elif (len(self.matrix_valores[0][i].get()) == 0 and (
                         len(self.matrix_valores[1][i].get()) == 0 and len(self.matrix_valores[2][i].get()) == 0) and len(
                         self.matrix_valores[3][i].get()) == 0):
                     pass
                 else:
                     filas_llenadas.append('error')
-            if filas_llenadas == [] or 'error' in filas_llenadas:
+            if filas_llenadas == [] or 'error' in filas_llenadas or contador_ponderado != 100.0:
                 return filas_llenadas, valor_puntual, False
             else:
                 return filas_llenadas, valor_puntual, True
@@ -203,11 +324,27 @@ class Application(tk.Frame):
                     fila.append(self.clase_base_de_datos.lista_propiedades_analogia()[0][filas_llenadas[i - 1]])
                 else:
                     if (valor_puntual[i - 1]):
-                        fila.append(float(self.matrix_valores[0][i-1].get()))
+                        fila.append(float(self.matrix_valores[0][filas_llenadas[i-1]].get()))
                     else:
-                        fila.append([float(k) for k in range(int(self.matrix_valores[1][i-1].get()),int(self.matrix_valores[2][i-1].get())+1)])
+                        fila.append([float(k) for k in range(int(self.matrix_valores[1][filas_llenadas[i-1]].get()),int(self.matrix_valores[2][filas_llenadas[i-1]].get())+1)])
             matrix_comparar.append(fila)
         return matrix_comparar
+
+    def get_valor_resultado(self,resultados,nomnbre_pozo):
+        filas_llenadas=self.comprobar_filas_llenadas()[0]
+        resultado=0
+        for i in range(1,len(resultados[0])):
+            if(resultados[0][i] == nomnbre_pozo):
+                for j in range(1,len(resultados)):
+                    resultado=resultado+resultados[j][i]*float(self.matrix_valores[3][filas_llenadas[j-1]].get())*100
+        return resultado
+
+    def get_valor_to_string(self,valor):
+        if(type(valor).__name__ == 'list'):
+            return str(valor[0])+' - '+str(valor[-1])
+        else:
+            return str(valor)
+
 
 app=Application()
 app.master.title("SOFTWARE D.I.S")

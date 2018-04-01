@@ -35,14 +35,16 @@ class base_datos():
         pozos=[]
         for i in range(2,self.datos.shape[1],1):
             pozos.append(self.datos.at[0,i])
-        pozos=list(set(pozos))
+        d={}
+        pozos=[d.setdefault(x, x) for x in pozos if x not in d]
         return pozos
 
     def get_categorias(self): #Funcion que retorna una lista de las categorias listadas en la base de datos
         categorias=[]
         for i in range(2,self.datos.shape[0],1):
             categorias.append(self.datos.at[i, 0])
-        categorias=list(set(categorias))
+        d = {}
+        categorias=[d.setdefault(x, x) for x in categorias if x not in d]
         return categorias
 
     def get_valores_pozo(self,pozo): #Funcion que retorna una matriz todos los valores del pozo mandado
@@ -124,9 +126,55 @@ class base_datos():
                     flag=True
                 elif((x == '1' or x == '2' or x == '3' or x == '4' or x == '5' or x == '6' or x == '7' or x == '8' or x == '9' or x == '0') and flag):
                     valor_max=valor_max+x
-            return [float(i) for i in range(int(valor_min),int(valor_max)+1,1)]
+            return [int(i) for i in range(int(valor_min),int(valor_max)+1,1)]
         else:
-            return float(self.datos.at[indice_fila,indice_columna])
+            return int(self.datos.at[indice_fila,indice_columna])
 
     def calculo_diferencias_propiedades(self,matrix_datos,matrix_comparar):
-        pass ##Defino esta funcion para obtener las diferencias y empezar a calcular las analogias
+        matrix_diferencias=[]
+        for i in range(len(matrix_datos)):
+            fila=[]
+            for j in range(len(matrix_datos[0])):
+                if (j == 0 and i == 0):
+                    fila.append('Pozo')
+                elif (i == 0 and j != 0):
+                    fila.append(self.get_pozos()[j - 1])
+                elif (j == 0 and i != 0):
+                    fila.append(matrix_datos[i][j])
+                else:
+                    if(type(matrix_datos[i][j]).__name__ == 'list'):
+                        valor_datos=(matrix_datos[i][j][0]+matrix_datos[i][j][-1])/2
+                    else:
+                        valor_datos=matrix_datos[i][j]
+                    if(type(matrix_comparar[i][1]).__name__ == 'list'):
+                        valor_comparar=(matrix_comparar[i][1][0]+matrix_comparar[i][1][-1])/2
+                    else:
+                        valor_comparar=matrix_comparar[i][1]
+                    fila.append(abs(valor_datos-valor_comparar))
+            matrix_diferencias.append(fila)
+        return matrix_diferencias
+
+    def lista_propiedades_unidades(self,propiedad): #Funcion que retorna las propiedades y unidades unidas
+        propiedades = [
+            "Viscosidad del crudo",
+            "Espesor neto",
+            "Gravedad API del crudo",
+            "Permeabilidad",
+            "Porosidad",
+            "Presion del yacimiento al inicio del proyecto",
+            "Temperatura del yacimiento",
+            "Profundidad"
+        ]
+        unidades=[
+            'cp',
+            'ft',
+            '°API',
+            'md',
+            '%',
+            'psi',
+            "°F",
+            "ft"
+        ]
+        for i in range(len(propiedades)):
+            if (propiedades[i]==propiedad):
+                return propiedades[i]+'('+unidades[i]+')'
