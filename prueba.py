@@ -65,6 +65,10 @@ class Application(tk.Frame):
             self.resultado.title("Resultado de la consulta del pozo: "+ pozo)
             self.resultado.geometry("800x600+50+20")
             self.resultado.grid()
+            self.resultado.rowconfigure(0,weight=9)
+            self.resultado.rowconfigure(1,weight=1)
+            self.resultado.columnconfigure(0,weight=1)
+            self.frame_tabla_consulta=tk.Frame(self.resultado)
             busqueda=np.asarray(self.clase_base_de_datos.get_valores_pozo(pozo))
             columna_unidades = []
             columna_valores = []
@@ -81,13 +85,16 @@ class Application(tk.Frame):
             busqueda = np.append(busqueda, columna_unidades, axis=1)
             busqueda = np.append(busqueda, columna_fecha, axis=1)
             busqueda_to_dataframe = pd.DataFrame(data=busqueda[1:,:],columns=busqueda[0,:])
-            self.table = Table(self.resultado,dataframe=busqueda_to_dataframe,showstatusbar=False,showtoolbar=False) #Con este table puedo mostrar la tabla de consulta
+            self.table = Table(self.frame_tabla_consulta,dataframe=busqueda_to_dataframe,showstatusbar=False,showtoolbar=False) #Con este table puedo mostrar la tabla de consulta
             self.table.show()
+            self.frame_tabla_consulta.grid(row=0,column=0,sticky=tk.N+tk.S+tk.W+tk.E)
+            self.boton_exportar_excel_consulta=tk.Button(self.resultado,text="Exportar a Excel",command=None)
+            self.boton_exportar_excel_consulta.grid(row=1,column=0,ipadx=50,ipady=10)
 
     def ventana_analogia(self):
         self.analogia = tk.Toplevel()
         self.analogia.title("Modulo para realizar analogia de un nuevo pozo")
-        self.analogia.geometry("800x600+70+30")
+        self.analogia.geometry("850x325+70+30")
         self.analogia.config(bg="#fff")
         self.analogia.grid()
         for i in range(0, 11):
@@ -168,7 +175,25 @@ class Application(tk.Frame):
                     else:
                         fila.append(self.get_valor_to_string(self.datos_pozos[j-1][i-1]))
             matrix_mostrar.append(fila)
-        print(matrix_mostrar)
+        self.analogia.destroy()
+        self.resultado_analogia=tk.Toplevel()
+        self.resultado_analogia.title("Resultado de la analogia del pozo: " + self.valores_nuevo_pozo[0][1])
+        self.resultado_analogia.geometry("525x290+50+20")
+        self.resultado_analogia.grid()
+        self.resultado_analogia.rowconfigure(0,weight=9)
+        self.resultado_analogia.rowconfigure(1,weight=1)
+        self.resultado_analogia.columnconfigure(0,weight=1)
+        self.resultado_analogia.columnconfigure(1,weight=1)
+        self.frame_tabla_analogia=tk.Frame(self.resultado_analogia)
+        matrix_mostrar=np.asarray(matrix_mostrar)
+        df_matrix=pd.DataFrame(data=matrix_mostrar[1:,:],columns=matrix_mostrar[0,:])
+        self.tabla_analogia=Table(self.frame_tabla_analogia,dataframe=df_matrix,showstatusbar=False,showtoolbar=False)
+        self.tabla_analogia.show()
+        self.frame_tabla_analogia.grid(row=0,column=0,columnspan=2,sticky=tk.N+tk.S+tk.W+tk.E)
+        self.boton_exportar_excel_analogia = tk.Button(self.resultado_analogia, text="Exportar a Excel", command=None)
+        self.boton_exportar_excel_analogia.grid(row=1, column=0, ipadx=50, ipady=10)
+        self.boton_info_detallada = tk.Button(self.resultado_analogia, text="Informacion Detallada de los Campos", command=None)
+        self.boton_info_detallada.grid(row=1, column=1, ipadx=50, ipady=10)
 
     def resultado_analogia_jaccard(self):
         self.resultados,self.valores_nuevo_pozo,self.datos_pozos=self.calculo_analogia_jaccard()
@@ -198,7 +223,25 @@ class Application(tk.Frame):
                     else:
                         fila.append(self.get_valor_to_string(self.datos_pozos[j - 1][i - 1]))
             matrix_mostrar.append(fila)
-        print(matrix_mostrar)
+        self.analogia.destroy()
+        self.resultado_analogia = tk.Toplevel()
+        self.resultado_analogia.title("Resultado de la analogia del pozo: " + self.valores_nuevo_pozo[0][1])
+        self.resultado_analogia.geometry("525x290+50+20")
+        self.resultado_analogia.grid()
+        self.resultado_analogia.rowconfigure(0, weight=9)
+        self.resultado_analogia.rowconfigure(1, weight=1)
+        self.resultado_analogia.columnconfigure(0, weight=1)
+        self.resultado_analogia.columnconfigure(1, weight=1)
+        self.frame_tabla_analogia = tk.Frame(self.resultado_analogia)
+        matrix_mostrar = np.asarray(matrix_mostrar)
+        df_matrix = pd.DataFrame(data=matrix_mostrar[1:, :], columns=matrix_mostrar[0, :])
+        self.tabla_analogia = Table(self.frame_tabla_analogia, dataframe=df_matrix, showstatusbar=False,showtoolbar=False)
+        self.tabla_analogia.show()
+        self.frame_tabla_analogia.grid(row=0, column=0, columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.boton_exportar_excel_analogia = tk.Button(self.resultado_analogia, text="Exportar a Excel", command=None)
+        self.boton_exportar_excel_analogia.grid(row=1, column=0, ipadx=50, ipady=10)
+        self.boton_info_detallada = tk.Button(self.resultado_analogia, text="Informacion Detallada de los Campos",command=None)
+        self.boton_info_detallada.grid(row=1, column=1, ipadx=50, ipady=10)
 
     def calculo_analogia_promedio(self):
         filas_llenadas,valor_puntual,flag = self.comprobar_filas_llenadas()
@@ -219,7 +262,9 @@ class Application(tk.Frame):
                     else:
                         if (type(matrix_comparar[i][1]).__name__ == 'list' and type(
                                 matrix_datos[i][j]).__name__ == 'list'):
-                            AuB = matrix_datos[i][j]
+                            AuB = []
+                            for k in matrix_datos[i][j]:
+                                AuB.append(k)
                             AnB = []
                             for x in matrix_comparar[i][1]:
                                 if x not in AuB:
@@ -336,8 +381,8 @@ class Application(tk.Frame):
         for i in range(1,len(resultados[0])):
             if(resultados[0][i] == nomnbre_pozo):
                 for j in range(1,len(resultados)):
-                    resultado=resultado+resultados[j][i]*float(self.matrix_valores[3][filas_llenadas[j-1]].get())*100
-        return resultado
+                    resultado=resultado+resultados[j][i]*(float(self.matrix_valores[3][filas_llenadas[j-1]].get())/100)
+        return resultado*100
 
     def get_valor_to_string(self,valor):
         if(type(valor).__name__ == 'list'):
