@@ -128,7 +128,7 @@ class base_datos():
                     valor_max=valor_max+x
             return [int(i) for i in range(int(valor_min),int(valor_max)+1,1)]
         elif(self.datos.at[indice_fila,indice_columna]==''):
-            return 0
+            return ''
         else:
             return int(self.datos.at[indice_fila,indice_columna])
 
@@ -146,13 +146,18 @@ class base_datos():
                 else:
                     if(type(matrix_datos[i][j]).__name__ == 'list'):
                         valor_datos=(matrix_datos[i][j][0]+matrix_datos[i][j][-1])/2
+                    elif(matrix_datos[i][j]==''):
+                        valor_datos=0
                     else:
                         valor_datos=matrix_datos[i][j]
                     if(type(matrix_comparar[i][1]).__name__ == 'list'):
                         valor_comparar=(matrix_comparar[i][1][0]+matrix_comparar[i][1][-1])/2
                     else:
                         valor_comparar=matrix_comparar[i][1]
-                    fila.append(abs(valor_datos-valor_comparar))
+                    if(valor_datos==0):
+                        fila.append(0)
+                    else:
+                        fila.append(abs(valor_datos - valor_comparar))
             matrix_diferencias.append(fila)
         return matrix_diferencias
 
