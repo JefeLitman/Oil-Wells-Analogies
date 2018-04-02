@@ -98,7 +98,7 @@ class base_datos():
             fila = []
             for j in range(1 + len(self.get_pozos())):
                 if (j == 0 and i == 0):
-                    fila.append('Pozo')
+                    fila.append('Campo')
                 elif (i == 0 and j != 0):
                     fila.append(self.get_pozos()[j - 1])
                 elif (j == 0 and i != 0):
@@ -127,6 +127,8 @@ class base_datos():
                 elif((x == '1' or x == '2' or x == '3' or x == '4' or x == '5' or x == '6' or x == '7' or x == '8' or x == '9' or x == '0') and flag):
                     valor_max=valor_max+x
             return [int(i) for i in range(int(valor_min),int(valor_max)+1,1)]
+        elif(self.datos.at[indice_fila,indice_columna]==''):
+            return 0
         else:
             return int(self.datos.at[indice_fila,indice_columna])
 
@@ -136,7 +138,7 @@ class base_datos():
             fila=[]
             for j in range(len(matrix_datos[0])):
                 if (j == 0 and i == 0):
-                    fila.append('Pozo')
+                    fila.append('Campo')
                 elif (i == 0 and j != 0):
                     fila.append(self.get_pozos()[j - 1])
                 elif (j == 0 and i != 0):

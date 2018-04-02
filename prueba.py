@@ -32,14 +32,14 @@ class Application(tk.Frame):
         self.imagen_fondo=tk.PhotoImage(file="AppData/Images/ecopetrol_bg.gif")
         self.fondo_pantalla=tk.Label(self,image=self.imagen_fondo)
         self.fondo_pantalla.grid(row=0,column=0,rowspan=2,columnspan=2,sticky=tk.S+tk.N+tk.W+tk.E)
-        self.boton_consulta = tk.Button(self, text='Consultar Pozo',command=self.ventana_consulta)
+        self.boton_consulta = tk.Button(self, text='Consultar Campo',command=self.ventana_consulta)
         self.boton_consulta.grid(row=1,column=0,padx=80,pady=100,sticky=tk.W+tk.E+tk.S)
         self.boton_analogia = tk.Button(self, text='Realizar Analogia',command=self.ventana_analogia)
         self.boton_analogia.grid(row=1,column=1,padx=80,pady=100,sticky=tk.W+tk.E+tk.S)
 
     def ventana_consulta(self):
         self.consulta=tk.Toplevel()
-        self.consulta.title("Consulta de Pozos existentes")
+        self.consulta.title("Consulta de Campos existentes")
         self.consulta.geometry("450x65+100+80")
         self.consulta.resizable(0,0)
         self.consulta.grid()
@@ -48,7 +48,7 @@ class Application(tk.Frame):
         self.consulta.rowconfigure(1,weight=1)
         self.consulta.columnconfigure(0,weight=1)
         self.consulta.columnconfigure(1,weight=3)
-        self.label_pozo=tk.Label(self.consulta,text="Seleccione un pozo:",bg="#fff")
+        self.label_pozo=tk.Label(self.consulta,text="Seleccione un campo:",bg="#fff")
         self.lista_pozos=ttk.Combobox(self.consulta,state="readonly",values=self.clase_base_de_datos.get_pozos())
         self.boton_consultar=tk.Button(self.consulta,text="Consultar",command=self.resultado_consulta)
         self.label_pozo.grid(row=0,column=0)
@@ -62,7 +62,7 @@ class Application(tk.Frame):
             pozo=self.lista_pozos.get()
             self.consulta.destroy()
             self.resultado = tk.Toplevel()
-            self.resultado.title("Resultado de la consulta del pozo: "+ pozo)
+            self.resultado.title("Resultado de la consulta del campo: "+ pozo)
             self.resultado.geometry("800x600+50+20")
             self.resultado.grid()
             self.resultado.rowconfigure(0,weight=9)
@@ -93,7 +93,7 @@ class Application(tk.Frame):
 
     def ventana_analogia(self):
         self.analogia = tk.Toplevel()
-        self.analogia.title("Modulo para realizar analogia de un nuevo pozo")
+        self.analogia.title("Modulo para realizar analogia de un nuevo campo")
         self.analogia.geometry("850x325+70+30")
         self.analogia.config(bg="#fff")
         self.analogia.grid()
@@ -101,7 +101,7 @@ class Application(tk.Frame):
             self.analogia.rowconfigure(i, weight=1)
         for i in range(0, 6):
             self.analogia.columnconfigure(i, weight=1)
-        self.nombre_pozo = tk.Label(self.analogia, text="Nombre del pozo:", bg="#fff", relief="groove")
+        self.nombre_pozo = tk.Label(self.analogia, text="Nombre del campo:", bg="#fff", relief="groove")
         self.campo_nombre_pozo  = tk.Entry(self.analogia,bg="#fff",relief="groove")
         self.propiedades = tk.Label(self.analogia, text="Propiedades para analogia", bg="#fff", relief="groove")
         self.unidades = tk.Label(self.analogia, text="Unidades", bg="#fff", relief="groove")
@@ -156,7 +156,7 @@ class Application(tk.Frame):
                 if(j==0 and i==0):
                     fila.append('Puntaje')
                 elif(i==0 and j==1):
-                    fila.append('Pozo')
+                    fila.append('Campo')
                 elif(i==0 and j not in [0,1]):
                     fila.append(self.clase_base_de_datos.lista_propiedades_unidades(self.valores_nuevo_pozo[j-1][i]))
                 elif(i!=0 and j==0):
@@ -177,7 +177,7 @@ class Application(tk.Frame):
             matrix_mostrar.append(fila)
         self.analogia.destroy()
         self.resultado_analogia=tk.Toplevel()
-        self.resultado_analogia.title("Resultado de la analogia del pozo: " + self.valores_nuevo_pozo[0][1])
+        self.resultado_analogia.title("Resultado de la analogia del campo: " + self.valores_nuevo_pozo[0][1])
         self.resultado_analogia.geometry("525x290+50+20")
         self.resultado_analogia.grid()
         self.resultado_analogia.rowconfigure(0,weight=9)
@@ -204,7 +204,7 @@ class Application(tk.Frame):
                 if (j == 0 and i == 0):
                     fila.append('Puntaje')
                 elif (i == 0 and j == 1):
-                    fila.append('Pozo')
+                    fila.append('Campo')
                 elif (i == 0 and j not in [0, 1]):
                     fila.append(self.clase_base_de_datos.lista_propiedades_unidades(self.valores_nuevo_pozo[j - 1][i]))
                 elif (i != 0 and j == 0):
@@ -225,7 +225,7 @@ class Application(tk.Frame):
             matrix_mostrar.append(fila)
         self.analogia.destroy()
         self.resultado_analogia = tk.Toplevel()
-        self.resultado_analogia.title("Resultado de la analogia del pozo: " + self.valores_nuevo_pozo[0][1])
+        self.resultado_analogia.title("Resultado de la analogia del Campo: " + self.valores_nuevo_pozo[0][1])
         self.resultado_analogia.geometry("525x290+50+20")
         self.resultado_analogia.grid()
         self.resultado_analogia.rowconfigure(0, weight=9)
@@ -254,7 +254,7 @@ class Application(tk.Frame):
                 fila = []
                 for j in range(len(matrix_datos[0])):
                     if (j == 0 and i == 0):
-                        fila.append('Pozo')
+                        fila.append('Campo')
                     elif (i == 0 and j != 0):
                         fila.append(self.clase_base_de_datos.get_pozos()[j-1])
                     elif (j == 0 and i != 0):
@@ -278,6 +278,8 @@ class Application(tk.Frame):
                                 fila.append(1.0 if matrix_datos[i][j] in matrix_comparar[i][1] else 0)
                             else:
                                 fila.append(1.0 if matrix_comparar[i][1] in matrix_datos[i][j] else 0)
+                        elif (type(matrix_datos[i][j]=='')):
+                            fila.append(0)
                         else:
                             fila.append(matrix_diferencias[i][j] / max([matrix_diferencias[i][k] for k in range(1,len(matrix_diferencias[0]))]))
                 matrix_resultado.append(fila)
@@ -297,7 +299,7 @@ class Application(tk.Frame):
                 fila=[]
                 for j in range(len(matrix_datos[0])):
                     if (j == 0 and i == 0):
-                        fila.append('Pozo')
+                        fila.append('Campo')
                     elif (i == 0 and j != 0):
                         fila.append(self.clase_base_de_datos.get_pozos()[j-1])
                     elif (j == 0 and i != 0):
@@ -319,6 +321,8 @@ class Application(tk.Frame):
                                 fila.append(1.0 if matrix_datos[i][j] in matrix_comparar[i][1] else 0)
                             else:
                                 fila.append(1.0 if matrix_comparar[i][1] in matrix_datos[i][j] else 0)
+                        elif (type(matrix_datos[i][j]=='')):
+                            fila.append(0)
                         else:
                             fila.append(1-(matrix_diferencias[i][j]/max([matrix_diferencias[i][k] for k in range(1,len(matrix_diferencias[0]))])))
                 matrix_resultado.append(fila)
@@ -364,7 +368,7 @@ class Application(tk.Frame):
             fila = []
             for j in range(2):
                 if (j == 0 and i == 0):
-                    fila.append('Pozo')
+                    fila.append('Campo')
                 elif (i == 0 and j != 0):
                     fila.append(self.campo_nombre_pozo.get())
                 elif (j == 0 and i != 0):
