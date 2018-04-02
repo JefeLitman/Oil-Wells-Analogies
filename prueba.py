@@ -355,7 +355,7 @@ class Application(tk.Frame):
                     pass
                 else:
                     filas_llenadas.append('error')
-            if filas_llenadas == [] or 'error' in filas_llenadas or contador_ponderado != 100.0:
+            if filas_llenadas == [] or 'error' in filas_llenadas or contador_ponderado not in [100.0,100.000000000000008,100.000000000000002]:
                 return filas_llenadas, valor_puntual, False
             else:
                 return filas_llenadas, valor_puntual, True

@@ -126,7 +126,10 @@ class base_datos():
                     flag=True
                 elif((x == '1' or x == '2' or x == '3' or x == '4' or x == '5' or x == '6' or x == '7' or x == '8' or x == '9' or x == '0') and flag):
                     valor_max=valor_max+x
-            return [int(i) for i in range(int(valor_min),int(valor_max)+1,1)]
+            if (valor_min=='' or valor_max==''):
+                return self.datos.at[indice_fila,indice_columna]
+            else:
+                return [int(i) for i in range(int(valor_min),int(valor_max)+1,1)]
         elif(self.datos.at[indice_fila,indice_columna]==''):
             return ''
         else:
@@ -146,7 +149,7 @@ class base_datos():
                 else:
                     if(type(matrix_datos[i][j]).__name__ == 'list'):
                         valor_datos=(matrix_datos[i][j][0]+matrix_datos[i][j][-1])/2
-                    elif(matrix_datos[i][j]==''):
+                    elif(type(matrix_datos[i][j]).__name__=='str'):
                         valor_datos=0
                     else:
                         valor_datos=matrix_datos[i][j]
@@ -155,7 +158,7 @@ class base_datos():
                     else:
                         valor_comparar=matrix_comparar[i][1]
                     if(valor_datos==0):
-                        fila.append(0)
+                        fila.append(0.0)
                     else:
                         fila.append(abs(valor_datos - valor_comparar))
             matrix_diferencias.append(fila)
