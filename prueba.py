@@ -304,7 +304,9 @@ class Application(tk.Frame):
                         fila.append(self.clase_base_de_datos.lista_propiedades_analogia()[0][filas_llenadas[i - 1]])
                     else:
                         if(type(matrix_comparar[i][1]).__name__=='list' and type(matrix_datos[i][j]).__name__=='list'):
-                            AuB = matrix_datos[i][j]
+                            AuB = []
+                            for k in matrix_datos[i][j]:
+                                AuB.append(k)
                             AnB = []
                             for x in matrix_comparar[i][1]:
                                 if x not in AuB:
