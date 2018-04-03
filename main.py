@@ -404,6 +404,9 @@ class Application(tk.Frame):
                                                          initialfile="Resultado_analogia", parent=self.resultado_analogia)
         self.clase_base_de_datos.conversion_excel(self.df_matrix, filedirectory)
 
+    def ventana_informacion_detallada(self):
+        pass
+
 app=Application()
 app.master.title("SOFTWARE D.I.S")
 app.master.resizable(0,0)
