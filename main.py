@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
+from tkinter import messagebox,filedialog
 import tkinter.font as tkFont
 from AppData.Scripts.funciones import base_datos as bd
 from pandastable import Table
@@ -22,7 +22,6 @@ class Application(tk.Frame):
         #self.letra_botones = tkFont.Font(family="Lucida Sans",size=8,weight="normal")
         #self.letra_contenido = tkFont.Font(family="Lucida Sans",size=8,weight="normal")
         self.createWidgets()
-
 
     def createWidgets(self):
         self.rowconfigure(0,weight=1)
@@ -57,7 +56,7 @@ class Application(tk.Frame):
 
     def resultado_consulta(self):
         if(len(self.lista_pozos.get()) == 0):# or len(self.lista_categorias.get()) == 0):
-            messagebox.showerror("Error en la consulta","Digite los datos faltantes para realizar la \nla consulta en la base de datos")
+            messagebox.showerror("Error en la consulta","Digite los datos faltantes para realizar la \nla consulta en la base de datos",parent=self.consulta)
         else:
             pozo=self.lista_pozos.get()
             self.consulta.destroy()
@@ -84,11 +83,11 @@ class Application(tk.Frame):
             busqueda = np.append(busqueda, columna_valores, axis=1)
             busqueda = np.append(busqueda, columna_unidades, axis=1)
             busqueda = np.append(busqueda, columna_fecha, axis=1)
-            busqueda_to_dataframe = pd.DataFrame(data=busqueda[1:,:],columns=busqueda[0,:])
-            self.table = Table(self.frame_tabla_consulta,dataframe=busqueda_to_dataframe,showstatusbar=False,showtoolbar=False) #Con este table puedo mostrar la tabla de consulta
+            self.busqueda_to_dataframe = pd.DataFrame(data=busqueda[1:,:],columns=busqueda[0,:])
+            self.table = Table(self.frame_tabla_consulta,dataframe=self.busqueda_to_dataframe,showstatusbar=False,showtoolbar=False) #Con este table puedo mostrar la tabla de consulta
             self.table.show()
             self.frame_tabla_consulta.grid(row=0,column=0,sticky=tk.N+tk.S+tk.W+tk.E)
-            self.boton_exportar_excel_consulta=tk.Button(self.resultado,text="Exportar a Excel",command=None)
+            self.boton_exportar_excel_consulta=tk.Button(self.resultado,text="Exportar a Excel",command=self.ventana_guardar_excel_consulta)
             self.boton_exportar_excel_consulta.grid(row=1,column=0,ipadx=50,ipady=10)
 
     def ventana_analogia(self):
@@ -186,11 +185,11 @@ class Application(tk.Frame):
         self.resultado_analogia.columnconfigure(1,weight=1)
         self.frame_tabla_analogia=tk.Frame(self.resultado_analogia)
         matrix_mostrar=np.asarray(matrix_mostrar)
-        df_matrix=pd.DataFrame(data=matrix_mostrar[1:,:],columns=matrix_mostrar[0,:])
-        self.tabla_analogia=Table(self.frame_tabla_analogia,dataframe=df_matrix,showstatusbar=False,showtoolbar=False)
+        self.df_matrix=pd.DataFrame(data=matrix_mostrar[1:,:],columns=matrix_mostrar[0,:])
+        self.tabla_analogia=Table(self.frame_tabla_analogia,dataframe=self.df_matrix,showstatusbar=False,showtoolbar=False)
         self.tabla_analogia.show()
         self.frame_tabla_analogia.grid(row=0,column=0,columnspan=2,sticky=tk.N+tk.S+tk.W+tk.E)
-        self.boton_exportar_excel_analogia = tk.Button(self.resultado_analogia, text="Exportar a Excel", command=None)
+        self.boton_exportar_excel_analogia = tk.Button(self.resultado_analogia, text="Exportar a Excel", command=self.ventana_guardar_excel_analogia)
         self.boton_exportar_excel_analogia.grid(row=1, column=0, ipadx=50, ipady=10)
         self.boton_info_detallada = tk.Button(self.resultado_analogia, text="Informacion Detallada de los Campos", command=None)
         self.boton_info_detallada.grid(row=1, column=1, ipadx=50, ipady=10)
@@ -234,11 +233,11 @@ class Application(tk.Frame):
         self.resultado_analogia.columnconfigure(1, weight=1)
         self.frame_tabla_analogia = tk.Frame(self.resultado_analogia)
         matrix_mostrar = np.asarray(matrix_mostrar)
-        df_matrix = pd.DataFrame(data=matrix_mostrar[1:, :], columns=matrix_mostrar[0, :])
-        self.tabla_analogia = Table(self.frame_tabla_analogia, dataframe=df_matrix, showstatusbar=False,showtoolbar=False)
+        self.df_matrix = pd.DataFrame(data=matrix_mostrar[1:, :], columns=matrix_mostrar[0, :])
+        self.tabla_analogia = Table(self.frame_tabla_analogia, dataframe=self.df_matrix, showstatusbar=False,showtoolbar=False)
         self.tabla_analogia.show()
         self.frame_tabla_analogia.grid(row=0, column=0, columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
-        self.boton_exportar_excel_analogia = tk.Button(self.resultado_analogia, text="Exportar a Excel", command=None)
+        self.boton_exportar_excel_analogia = tk.Button(self.resultado_analogia, text="Exportar a Excel", command=self.ventana_guardar_excel_analogia)
         self.boton_exportar_excel_analogia.grid(row=1, column=0, ipadx=50, ipady=10)
         self.boton_info_detallada = tk.Button(self.resultado_analogia, text="Informacion Detallada de los Campos",command=None)
         self.boton_info_detallada.grid(row=1, column=1, ipadx=50, ipady=10)
@@ -286,7 +285,7 @@ class Application(tk.Frame):
             return matrix_resultado,matrix_comparar,matrix_datos
         else:
             return messagebox.showerror("Error en la analogia",
-                                 "Digite correctamente los datos para realizar la \nla analogia del pozo digitado"),None,None
+                                 "Digite correctamente los datos para realizar la \nla analogia del pozo digitado",parent=self.analogia),None,None
 
     def calculo_analogia_jaccard(self):
         filas_llenadas,valor_puntual, flag = self.comprobar_filas_llenadas()
@@ -329,7 +328,7 @@ class Application(tk.Frame):
             return matrix_resultado,matrix_comparar,matrix_datos
         else:
             return messagebox.showerror("Error en la analogia",
-                                 "Digite correctamente los datos para realizar la \nla analogia del pozo digitado"),None,None
+                                 "Digite correctamente los datos para realizar la \nla analogia del pozo digitado",parent=self.analogia),None,None
 
     def comprobar_filas_llenadas(self):
         filas_llenadas = [] #En este vector se guarda los indices de las filas que se han llenado en los entry's
@@ -396,6 +395,13 @@ class Application(tk.Frame):
         else:
             return str(valor)
 
+    def ventana_guardar_excel_consulta(self):
+        filedirectory=filedialog.asksaveasfilename(title="Guardar como...",defaultextension='.xlsx',initialfile="Datos_consulta",parent=self.resultado)
+        self.clase_base_de_datos.conversion_excel(self.busqueda_to_dataframe,filedirectory)
+    def ventana_guardar_excel_analogia(self):
+        filedirectory = filedialog.asksaveasfilename(title="Guardar como...", defaultextension='.xlsx',
+                                                         initialfile="Resultado_analogia", parent=self.resultado_analogia)
+        self.clase_base_de_datos.conversion_excel(self.df_matrix, filedirectory)
 
 app=Application()
 app.master.title("SOFTWARE D.I.S")

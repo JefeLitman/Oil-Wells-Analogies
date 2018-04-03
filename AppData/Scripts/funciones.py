@@ -28,8 +28,9 @@ class base_datos():
                     self.datos.at[i,j]=""
         return self.datos # Retorno de los datos ordenados y arreglados
 
-    def conversion_excel(self):
-        self.datos.to_excel(pd.ExcelWriter('base_datos1.xlsx'),'Sheet1') #Como convertir de dataframe a excel
+    def conversion_excel(self,datos_a_convertir,filedirectory):
+        if (filedirectory != ''):
+            datos_a_convertir.to_excel(pd.ExcelWriter(filedirectory),'Sheet1') #Como convertir de dataframe a excel
 
     def get_pozos(self): # Funcion que retorna una lista de los pozos listados en la base de datos
         pozos=[]
