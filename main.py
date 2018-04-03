@@ -398,7 +398,7 @@ class Application(tk.Frame):
     def ventana_guardar_excel_consulta(self):
         filedirectory=filedialog.asksaveasfilename(title="Guardar como...",defaultextension='.xlsx',initialfile="Datos_consulta",parent=self.resultado)
         self.clase_base_de_datos.conversion_excel(self.busqueda_to_dataframe,filedirectory)
-        
+
     def ventana_guardar_excel_analogia(self):
         filedirectory = filedialog.asksaveasfilename(title="Guardar como...", defaultextension='.xlsx',
                                                          initialfile="Resultado_analogia", parent=self.resultado_analogia)
