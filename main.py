@@ -100,14 +100,14 @@ class Application(tk.Frame):
             self.analogia.rowconfigure(i, weight=1)
         for i in range(0, 6):
             self.analogia.columnconfigure(i, weight=1)
-        self.nombre_pozo = tk.Label(self.analogia, text="Nombre del campo:", bg="#fff", relief="groove")
-        self.campo_nombre_pozo  = tk.Entry(self.analogia,bg="#fff",relief="groove")
-        self.propiedades = tk.Label(self.analogia, text="Propiedades para analogia", bg="#fff", relief="groove")
-        self.unidades = tk.Label(self.analogia, text="Unidades", bg="#fff", relief="groove")
-        self.puntual = tk.Label(self.analogia, text="Valor único", bg="#fff", relief="groove")
-        self.min = tk.Label(self.analogia, text="Valor minimo", bg="#fff", relief="groove")
-        self.max = tk.Label(self.analogia, text="Valor maximo", bg="#fff", relief="groove")
-        self.ponderacion = tk.Label(self.analogia, text="Ponderacion", bg="#fff", relief="groove")
+        self.nombre_pozo = tk.Label(self.analogia, text="Nombre del campo:", bg="#E8F06B", relief="groove")
+        self.campo_nombre_pozo  = tk.Entry(self.analogia,bg="#E2EBC8",relief="groove",justify=tk.CENTER)
+        self.propiedades = tk.Label(self.analogia, text="Propiedades para analogia", bg="#E8F06B", relief="groove")
+        self.unidades = tk.Label(self.analogia, text="Unidades", bg="#E8F06B", relief="groove")
+        self.puntual = tk.Label(self.analogia, text="Valor único", bg="#E8F06B", relief="groove")
+        self.min = tk.Label(self.analogia, text="Valor minimo", bg="#E8F06B", relief="groove")
+        self.max = tk.Label(self.analogia, text="Valor maximo", bg="#E8F06B", relief="groove")
+        self.ponderacion = tk.Label(self.analogia, text="Ponderacion(%)", bg="#E8F06B", relief="groove")
         self.nombre_pozo.grid(row=0, column=0, columnspan=3, sticky=tk.N + tk.S + tk.E + tk.W)
         self.campo_nombre_pozo.grid(row=0, column=3, columnspan=3, sticky=tk.N + tk.S + tk.W + tk.E)
         self.propiedades.grid(row=1, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
@@ -118,15 +118,15 @@ class Application(tk.Frame):
         self.ponderacion.grid(row=1, column=5, sticky=tk.N + tk.S + tk.W + tk.E)
         propi_unida = self.clase_base_de_datos.lista_propiedades_analogia() #Obtengo la matriz con las propiedades y unidades
         for i in range(0,len(propi_unida[0])):
-            propiedad = tk.Label(self.analogia,text=propi_unida[0][i],bg="#fff",relief="groove")
-            unidades = tk.Label(self.analogia,text=propi_unida[1][i],bg="#fff",relief="groove")
+            propiedad = tk.Label(self.analogia,text=propi_unida[0][i],bg="#76F072",relief="groove")
+            unidades = tk.Label(self.analogia,text=propi_unida[1][i],bg="#76F072",relief="groove")
             propiedad.grid(row=2+i,column=0,sticky=tk.N + tk.S + tk.W + tk.E)
             unidades.grid(row=2+i,column=1,sticky=tk.N + tk.S + tk.W + tk.E)
         self.matrix_valores=[]
         for j in range(0,4):
             columna=[]
             for i in range(0,8):
-                valor_ingresar = tk.Entry(self.analogia,bg="#fff",justify=tk.CENTER,relief="groove")
+                valor_ingresar = tk.Entry(self.analogia,bg="#E2EBC8",justify=tk.CENTER,relief="groove")
                 valor_ingresar.grid(row=2+i, column=2+j, sticky=tk.N + tk.S + tk.W + tk.E)
                 columna.append(valor_ingresar)
             self.matrix_valores.append(columna)
@@ -153,7 +153,7 @@ class Application(tk.Frame):
             fila=[]
             for j in range(len(self.datos_pozos)+1):
                 if(j==0 and i==0):
-                    fila.append('Puntaje')
+                    fila.append('Puntaje(%)')
                 elif(i==0 and j==1):
                     fila.append('Campo')
                 elif(i==0 and j not in [0,1]):
@@ -201,7 +201,7 @@ class Application(tk.Frame):
             fila = []
             for j in range(len(self.datos_pozos) + 1):
                 if (j == 0 and i == 0):
-                    fila.append('Puntaje')
+                    fila.append('Puntaje(%)')
                 elif (i == 0 and j == 1):
                     fila.append('Campo')
                 elif (i == 0 and j not in [0, 1]):
@@ -277,10 +277,10 @@ class Application(tk.Frame):
                                 fila.append(1.0 if matrix_datos[i][j] in matrix_comparar[i][1] else 0)
                             else:
                                 fila.append(1.0 if matrix_comparar[i][1] in matrix_datos[i][j] else 0)
-                        elif (type(matrix_datos[i][j]=='')):
+                        elif (matrix_datos[i][j]==''):
                             fila.append(0)
                         else:
-                            fila.append(matrix_diferencias[i][j] / max([matrix_diferencias[i][k] for k in range(1,len(matrix_diferencias[0]))]))
+                            fila.append(matrix_diferencias[i][j]*1.0 / max([matrix_diferencias[i][k] for k in range(1,len(matrix_diferencias[0]))]))
                 matrix_resultado.append(fila)
             return matrix_resultado,matrix_comparar,matrix_datos
         else:

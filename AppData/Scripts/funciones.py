@@ -134,7 +134,7 @@ class base_datos():
         elif(self.datos.at[indice_fila,indice_columna]==''):
             return ''
         else:
-            return int(self.datos.at[indice_fila,indice_columna])
+            return float(self.datos.at[indice_fila,indice_columna])
 
     def calculo_diferencias_propiedades(self,matrix_datos,matrix_comparar):
         matrix_diferencias=[]
@@ -161,7 +161,7 @@ class base_datos():
                     if(valor_datos==0):
                         fila.append(0.0)
                     else:
-                        fila.append(abs(valor_datos - valor_comparar))
+                        fila.append(1.0*abs(valor_datos - valor_comparar))
             matrix_diferencias.append(fila)
         return matrix_diferencias
 
