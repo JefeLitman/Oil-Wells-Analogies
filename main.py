@@ -191,7 +191,7 @@ class Application(tk.Frame):
         self.frame_tabla_analogia.grid(row=0,column=0,columnspan=2,sticky=tk.N+tk.S+tk.W+tk.E)
         self.boton_exportar_excel_analogia = tk.Button(self.resultado_analogia, text="Exportar a Excel", command=self.ventana_guardar_excel_analogia)
         self.boton_exportar_excel_analogia.grid(row=1, column=0, ipadx=50, ipady=10)
-        self.boton_info_detallada = tk.Button(self.resultado_analogia, text="Informacion Detallada de los Campos", command=None)
+        self.boton_info_detallada = tk.Button(self.resultado_analogia, text="Informacion Detallada de los Campos", command=self.ventana_informacion_detallada)
         self.boton_info_detallada.grid(row=1, column=1, ipadx=50, ipady=10)
 
     def resultado_analogia_jaccard(self):
@@ -239,7 +239,7 @@ class Application(tk.Frame):
         self.frame_tabla_analogia.grid(row=0, column=0, columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
         self.boton_exportar_excel_analogia = tk.Button(self.resultado_analogia, text="Exportar a Excel", command=self.ventana_guardar_excel_analogia)
         self.boton_exportar_excel_analogia.grid(row=1, column=0, ipadx=50, ipady=10)
-        self.boton_info_detallada = tk.Button(self.resultado_analogia, text="Informacion Detallada de los Campos",command=None)
+        self.boton_info_detallada = tk.Button(self.resultado_analogia, text="Informacion Detallada de los Campos",command=self.ventana_informacion_detallada)
         self.boton_info_detallada.grid(row=1, column=1, ipadx=50, ipady=10)
 
     def calculo_analogia_promedio(self):
@@ -405,6 +405,43 @@ class Application(tk.Frame):
         self.clase_base_de_datos.conversion_excel(self.df_matrix, filedirectory)
 
     def ventana_informacion_detallada(self):
+        self.informacion_detallada=tk.Toplevel()
+        self.informacion_detallada.title("Consulta de informacion detallada de los Campos Existentes")
+        self.informacion_detallada.geometry("800x600+50+20")
+        self.informacion_detallada.config(bg="#fff")
+        self.informacion_detallada.grid()
+        self.informacion_detallada.rowconfigure(0,weight=1)
+        self.informacion_detallada.rowconfigure(1, weight =1)
+        self.informacion_detallada.rowconfigure(2, weight =1)
+        self.informacion_detallada.rowconfigure(3, weight =1)
+        self.informacion_detallada.rowconfigure(4, weight =1)
+        self.informacion_detallada.rowconfigure(5, weight =1)
+        self.informacion_detallada.columnconfigure(0, weight =1)
+        self.informacion_detallada.columnconfigure(1, weight =1)
+        label_pozos=tk.Button(self.informacion_detallada,text="Seleccione un campo:",bg="#fff")
+        lista_pozos=ttk.Combobox(self.informacion_detallada,state="readonly",values=self.clase_base_de_datos.get_pozos())
+        boton_mostrar=tk.Button(self.informacion_detallada,text="Mostrar datos del campo",command=None)
+        problemas=tk.Label(self.informacion_detallada,text="Problemas",bg="#fff")
+        self.texto_problemas=tk.Text(self.informacion_detallada)
+        soluciones=tk.Label(self.informacion_detallada,text="Soluciones",bg="#fff")
+        self.texto_soluciones=tk.Text(self.informacion_detallada)
+        problemas_s=tk.Label(self.informacion_detallada,text="Problemas Estandar",bg="#fff")
+        self.texto_problemas_s=tk.Text(self.informacion_detallada)
+        soluciones_s=tk.Label(self.informacion_detallada,text="Soluciones Estandar",bg="#fff")
+        self.texto_solciones_s=tk.Text(self.informacion_detallada)
+        label_pozos.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E)
+        lista_pozos.grid(row=0, column=1, sticky=tk.N + tk.S + tk.W)
+        boton_mostrar.grid(row=1, column=0, columnspan=2, ipadx=30, ipady=6)
+        problemas.grid(row=2, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
+        soluciones.grid(row=2, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.texto_problemas.grid(row=3, column=0)
+        self.texto_soluciones.grid(row=3, column=1)
+        problemas_s.grid(row=4, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
+        soluciones_s.grid(row=4, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.texto_problemas_s.grid(row=5, column=0)
+        self.texto_solciones_s.grid(row=5,column=1)
+
+    def mostrar_info_detallada(self):
         pass
 
 app=Application()

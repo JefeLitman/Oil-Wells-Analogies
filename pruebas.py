@@ -5,10 +5,16 @@ from tkinter import filedialog
 #import numpy as np
 
 root = tk.Tk()
-root.filename = filedialog.asksaveasfilename(title="Guardar como...",
-                                             defaultextension='.xlsx',
-                                             initialfile="Datos")
-print(root.filename)
+root.grid()
+texto="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+for i in range(20,len(texto)+1):
+    if(i%20==0):
+        mitad=texto[0:i]
+        otra_mitad=texto[i:len(texto)+1]
+        nuevo_texto=mitad+"\n"+otra_mitad
+text=tk.Label(root,text=texto,justify=tk.LEFT)
+text.grid(sticky=tk.N+tk.S+tk.W+tk.E)
+root.mainloop()
 
 #base = bd()
 #datos=base.cargar_datos()

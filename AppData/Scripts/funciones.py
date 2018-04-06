@@ -189,3 +189,6 @@ class base_datos():
         for i in range(len(propiedades)):
             if (propiedades[i]==propiedad):
                 return propiedades[i]+'('+unidades[i]+')'
+
+    def get_problemas_soluciones_pozo(self,pozo):
+        pass
