@@ -3,7 +3,6 @@ import numpy as np
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox,filedialog
-import tkinter.font as tkFont
 from AppData.Scripts.funciones import base_datos as bd
 from pandastable import Table
 
@@ -407,42 +406,85 @@ class Application(tk.Frame):
     def ventana_informacion_detallada(self):
         self.informacion_detallada=tk.Toplevel()
         self.informacion_detallada.title("Consulta de informacion detallada de los Campos Existentes")
-        self.informacion_detallada.geometry("800x600+50+20")
+        self.informacion_detallada.geometry("800x600+70+20")
         self.informacion_detallada.config(bg="#fff")
         self.informacion_detallada.grid()
         self.informacion_detallada.rowconfigure(0,weight=1)
         self.informacion_detallada.rowconfigure(1, weight =1)
         self.informacion_detallada.rowconfigure(2, weight =1)
-        self.informacion_detallada.rowconfigure(3, weight =1)
+        self.informacion_detallada.rowconfigure(3, weight =5)
         self.informacion_detallada.rowconfigure(4, weight =1)
-        self.informacion_detallada.rowconfigure(5, weight =1)
+        self.informacion_detallada.rowconfigure(5, weight =5)
         self.informacion_detallada.columnconfigure(0, weight =1)
         self.informacion_detallada.columnconfigure(1, weight =1)
-        label_pozos=tk.Button(self.informacion_detallada,text="Seleccione un campo:",bg="#fff")
-        lista_pozos=ttk.Combobox(self.informacion_detallada,state="readonly",values=self.clase_base_de_datos.get_pozos())
-        boton_mostrar=tk.Button(self.informacion_detallada,text="Mostrar datos del campo",command=None)
-        problemas=tk.Label(self.informacion_detallada,text="Problemas",bg="#fff")
-        self.texto_problemas=tk.Text(self.informacion_detallada)
-        soluciones=tk.Label(self.informacion_detallada,text="Soluciones",bg="#fff")
-        self.texto_soluciones=tk.Text(self.informacion_detallada)
-        problemas_s=tk.Label(self.informacion_detallada,text="Problemas Estandar",bg="#fff")
-        self.texto_problemas_s=tk.Text(self.informacion_detallada)
-        soluciones_s=tk.Label(self.informacion_detallada,text="Soluciones Estandar",bg="#fff")
-        self.texto_solciones_s=tk.Text(self.informacion_detallada)
+        label_pozos=tk.Label(self.informacion_detallada,text="Seleccione un campo:",bg="#fff")
+        self.lista_campos=ttk.Combobox(self.informacion_detallada,state="readonly",values=self.clase_base_de_datos.get_pozos())
+        boton_mostrar=tk.Button(self.informacion_detallada,text="Mostrar datos del campo",command=self.mostrar_info_detallada)
+        problemas=tk.Label(self.informacion_detallada,text="Problemas",bg="#76F072",relief="groove")
+        self.texto_problemas=tk.Label(self.informacion_detallada,bg="#fff",relief="groove",justify=tk.LEFT)
+        soluciones=tk.Label(self.informacion_detallada,text="Soluciones",bg="#76F072",relief="groove")
+        self.texto_soluciones=tk.Label(self.informacion_detallada,bg="#fff",relief="groove",justify=tk.LEFT)
+        problemas_s=tk.Label(self.informacion_detallada,text="Problemas Estandar",bg="#76F072",relief="groove")
+        self.texto_problemas_s=tk.Label(self.informacion_detallada,bg="#fff",relief="groove",justify=tk.LEFT)
+        soluciones_s=tk.Label(self.informacion_detallada,text="Soluciones Estandar",bg="#76F072",relief="groove")
+        self.texto_solciones_s=tk.Label(self.informacion_detallada,bg="#fff",relief="groove",justify=tk.LEFT)
         label_pozos.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E)
-        lista_pozos.grid(row=0, column=1, sticky=tk.N + tk.S + tk.W)
+        self.lista_campos.grid(row=0, column=1, sticky=tk.N + tk.S + tk.W)
         boton_mostrar.grid(row=1, column=0, columnspan=2, ipadx=30, ipady=6)
         problemas.grid(row=2, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
         soluciones.grid(row=2, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
-        self.texto_problemas.grid(row=3, column=0)
-        self.texto_soluciones.grid(row=3, column=1)
+        self.texto_problemas.grid(row=3, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.texto_soluciones.grid(row=3, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
         problemas_s.grid(row=4, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
         soluciones_s.grid(row=4, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
-        self.texto_problemas_s.grid(row=5, column=0)
-        self.texto_solciones_s.grid(row=5,column=1)
+        self.texto_problemas_s.grid(row=5, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.texto_solciones_s.grid(row=5,column=1, sticky=tk.N + tk.S + tk.W + tk.E)
 
     def mostrar_info_detallada(self):
-        pass
+        if(len(self.lista_campos.get())==0):
+            messagebox.showerror("Error en la consulta",
+                                 "Digite los datos faltantes para realizar la \nla consulta en la base de datos",
+                                 parent=self.informacion_detallada)
+        else:
+            matrix=self.clase_base_de_datos.get_problemas_soluciones_pozo(self.lista_campos.get())
+            problemas=self.ordenar_texto_indices(matrix[1][1])
+            soluciones=self.ordenar_texto_indices(matrix[2][1])
+            problemas_s=self.ordenar_texto_indices(matrix[3][1])
+            soluciones_s=self.ordenar_texto_indices(matrix[4][1])
+            #self.informacion_detallada.update_idletasks() # Con esto actualizo la informacion de la ventana como el tamaño y demas
+            n=round(0.1*self.informacion_detallada.winfo_width())
+            n=60
+            self.texto_problemas.config(text=self.seccionado_texto(problemas,n),justify=tk.LEFT)
+            self.texto_soluciones.config(text=self.seccionado_texto(soluciones,n),justify=tk.LEFT)
+            self.texto_problemas_s.config(text=self.seccionado_texto(problemas_s,n),justify=tk.LEFT)
+            self.texto_solciones_s.config(text=self.seccionado_texto(soluciones_s,n),justify=tk.LEFT)
+
+    def seccionado_texto(self,texto,n): #Funcion que secciona el texto para que salga  completo
+        for i in range(1,round(len(texto)/n)):
+            if("\n" not in texto[0:i*(n+1)-1]):
+                mit1=texto[0:i*(n+1)-1]
+                mit2=texto[i*(n+1)-1:len(texto)+1]
+                texto=mit1+"\n"+mit2
+        return texto
+
+    def ordenar_texto_indices(self,texto): #Funcion que se encarga de ordenar bonito los numerales como 1) o A.
+        indicador=[41,46]
+        letras=list(range(65,91))
+        numeros=list(range(48,58))
+        memoria=0
+        for i in range(len(texto)):
+            if(memoria):
+                if(ord(texto[i]) in indicador):
+                    mit1=texto[0:i-1]
+                    mit2=texto[i-1:len(texto)+1]
+                    texto=mit1+"\n"+mit2
+                    memoria=0
+                else:
+                    memoria=0
+            else:
+                if(ord(texto[i]) in letras or ord(texto[i]) in numeros):
+                    memoria=1
+        return texto
 
 app=Application()
 app.master.title("SOFTWARE D.I.S")

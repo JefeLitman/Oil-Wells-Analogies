@@ -190,5 +190,30 @@ class base_datos():
             if (propiedades[i]==propiedad):
                 return propiedades[i]+'('+unidades[i]+')'
 
-    def get_problemas_soluciones_pozo(self,pozo):
-        pass
+    def get_problemas_soluciones_pozo(self,pozo): #Funcion que me retonar la matrix con los problemas y soluciones del campo
+        propiedades=[
+            "Problemas ",
+            "Soluciones",
+            "Problemas estandar",
+            "Soluciones estandar"
+        ]
+        matrix_valores = []
+        for i in range(1 + len(propiedades)):
+            fila = []
+            for j in range(2):
+                if (j == 0 and i == 0):
+                    fila.append('Campo')
+                elif (i == 0 and j != 0):
+                    fila.append(pozo)
+                elif (j == 0 and i != 0):
+                    fila.append(propiedades[i-1])
+                else:
+                    for k in range(self.datos.shape[0]):
+                        if (self.datos.at[k, 1] == fila[0]):
+                            indice_fila = k
+                    for l in range(3, self.datos.shape[1] - 1, 3):
+                        if (self.datos.at[0, l] == pozo):
+                            indice_columna = l
+                    fila.append(self.datos.at[indice_fila,indice_columna])
+            matrix_valores.append(fila)
+        return matrix_valores
