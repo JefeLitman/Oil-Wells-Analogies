@@ -454,25 +454,34 @@ class Application(tk.Frame):
             #self.informacion_detallada.update_idletasks() # Con esto actualizo la informacion de la ventana como el tamaño y demas
             n=round(0.1*self.informacion_detallada.winfo_width())
             n=60
-            self.texto_problemas.config(text=self.seccionado_texto(problemas,n),justify=tk.LEFT)
+            """self.texto_problemas.config(text=self.seccionado_texto(problemas,n),justify=tk.LEFT)
             self.texto_soluciones.config(text=self.seccionado_texto(soluciones,n),justify=tk.LEFT)
             self.texto_problemas_s.config(text=self.seccionado_texto(problemas_s,n),justify=tk.LEFT)
-            self.texto_solciones_s.config(text=self.seccionado_texto(soluciones_s,n),justify=tk.LEFT)
+            self.texto_solciones_s.config(text=self.seccionado_texto(soluciones_s,n),justify=tk.LEFT)"""
+            self.texto_problemas.config(text=problemas, justify=tk.LEFT)
+            self.texto_soluciones.config(text=soluciones, justify=tk.LEFT)
+            self.texto_problemas_s.config(text=problemas_s, justify=tk.LEFT)
+            self.texto_solciones_s.config(text=soluciones_s, justify=tk.LEFT)
 
     def seccionado_texto(self,texto,n): #Funcion que secciona el texto para que salga  completo
-        for i in range(1,round(len(texto)/n)):
-            if("\n" not in texto[0:i*(n+1)-1]):
-                mit1=texto[0:i*(n+1)-1]
-                mit2=texto[i*(n+1)-1:len(texto)+1]
+        """i=0
+        while(i+n<len(texto)+1):
+            if(texto.find('\n',beg=i)-i > n):
+                mit1=texto[0:i+n+1]s
+                mit2=texto[i+n+1:len(texto)+1]
                 texto=mit1+"\n"+mit2
-        return texto
+                i=i+n
+            else:
+                i=texto.find('\n',beg=i)+2
+        return texto"""
+
 
     def ordenar_texto_indices(self,texto): #Funcion que se encarga de ordenar bonito los numerales como 1) o A.
         indicador=[41,46]
         letras=list(range(65,91))
         numeros=list(range(48,58))
         memoria=0
-        for i in range(len(texto)):
+        for i in range(2,len(texto)):
             if(memoria):
                 if(ord(texto[i]) in indicador):
                     mit1=texto[0:i-1]
