@@ -453,28 +453,27 @@ class Application(tk.Frame):
             soluciones_s=self.ordenar_texto_indices(matrix[4][1])
             #self.informacion_detallada.update_idletasks() # Con esto actualizo la informacion de la ventana como el tamaño y demas
             n=round(0.1*self.informacion_detallada.winfo_width())
-            n=60
-            """self.texto_problemas.config(text=self.seccionado_texto(problemas,n),justify=tk.LEFT)
+            n=30
+            self.texto_problemas.config(text=self.seccionado_texto(problemas,n),justify=tk.LEFT)
             self.texto_soluciones.config(text=self.seccionado_texto(soluciones,n),justify=tk.LEFT)
             self.texto_problemas_s.config(text=self.seccionado_texto(problemas_s,n),justify=tk.LEFT)
-            self.texto_solciones_s.config(text=self.seccionado_texto(soluciones_s,n),justify=tk.LEFT)"""
-            self.texto_problemas.config(text=problemas, justify=tk.LEFT)
-            self.texto_soluciones.config(text=soluciones, justify=tk.LEFT)
-            self.texto_problemas_s.config(text=problemas_s, justify=tk.LEFT)
-            self.texto_solciones_s.config(text=soluciones_s, justify=tk.LEFT)
+            self.texto_solciones_s.config(text=self.seccionado_texto(soluciones_s,n),justify=tk.LEFT)
 
     def seccionado_texto(self,texto,n): #Funcion que secciona el texto para que salga  completo
-        """i=0
+        i=0
         while(i+n<len(texto)+1):
-            if(texto.find('\n',beg=i)-i > n):
-                mit1=texto[0:i+n+1]s
+            if(texto.find('\n',i)==-1):
+                break
+            else:
+                indice=texto.find('\n',i)
+            if(indice-i > n):
+                mit1=texto[0:i+n+1]
                 mit2=texto[i+n+1:len(texto)+1]
                 texto=mit1+"\n"+mit2
                 i=i+n
             else:
-                i=texto.find('\n',beg=i)+2
-        return texto"""
-
+                i=indice+2
+        return texto
 
     def ordenar_texto_indices(self,texto): #Funcion que se encarga de ordenar bonito los numerales como 1) o A.
         indicador=[41,46]

@@ -17,12 +17,10 @@ from AppData.Scripts.funciones import base_datos as bd
 #text.grid(sticky=tk.N+tk.S+tk.W+tk.E)
 #root.mainloop()
 
-
-
-pantalla = tk.Tk()
+#pantalla = tk.Tk()
 #for x in tkFont.families():
 #    print(x)
-pantalla.geometry("800x600")
-pantalla.update_idletasks()
-print(round(pantalla.winfo_width()*0.1))
-pantalla.mainloop()
+#pantalla.geometry("800x600")
+#pantalla.update_idletasks()
+#print(round(pantalla.winfo_width()*0.1))
+#pantalla.mainloop()
