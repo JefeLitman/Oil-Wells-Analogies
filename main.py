@@ -5,6 +5,7 @@ from tkinter import ttk
 from tkinter import messagebox,filedialog
 from AppData.Scripts.funciones import base_datos as bd
 from pandastable import Table
+from math import ceil
 
 class Application(tk.Frame):
     def __init__(self,master=None):
@@ -415,30 +416,40 @@ class Application(tk.Frame):
         self.informacion_detallada.rowconfigure(3, weight =5)
         self.informacion_detallada.rowconfigure(4, weight =1)
         self.informacion_detallada.rowconfigure(5, weight =5)
-        self.informacion_detallada.columnconfigure(0, weight =1)
+        self.informacion_detallada.columnconfigure(0, weight =2)
         self.informacion_detallada.columnconfigure(1, weight =1)
+        self.informacion_detallada.columnconfigure(2, weight=2)
+        self.informacion_detallada.columnconfigure(3, weight=1)
         label_pozos=tk.Label(self.informacion_detallada,text="Seleccione un campo:",bg="#fff")
         self.lista_campos=ttk.Combobox(self.informacion_detallada,state="readonly",values=self.clase_base_de_datos.get_pozos())
         boton_mostrar=tk.Button(self.informacion_detallada,text="Mostrar datos del campo",command=self.mostrar_info_detallada)
         problemas=tk.Label(self.informacion_detallada,text="Problemas",bg="#76F072",relief="groove")
-        self.texto_problemas=tk.Label(self.informacion_detallada,bg="#fff",relief="groove",justify=tk.LEFT)
+        self.texto_problemas=tk.Text(self.informacion_detallada,relief="groove",width=35,height=3)
         soluciones=tk.Label(self.informacion_detallada,text="Soluciones",bg="#76F072",relief="groove")
-        self.texto_soluciones=tk.Label(self.informacion_detallada,bg="#fff",relief="groove",justify=tk.LEFT)
+        self.texto_soluciones=tk.Text(self.informacion_detallada,relief="groove",width=35,height=3)
         problemas_s=tk.Label(self.informacion_detallada,text="Problemas Estandar",bg="#76F072",relief="groove")
-        self.texto_problemas_s=tk.Label(self.informacion_detallada,bg="#fff",relief="groove",justify=tk.LEFT)
+        self.texto_problemas_s=tk.Text(self.informacion_detallada,relief="groove",width=35,height=3)
         soluciones_s=tk.Label(self.informacion_detallada,text="Soluciones Estandar",bg="#76F072",relief="groove")
-        self.texto_solciones_s=tk.Label(self.informacion_detallada,bg="#fff",relief="groove",justify=tk.LEFT)
-        label_pozos.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E)
-        self.lista_campos.grid(row=0, column=1, sticky=tk.N + tk.S + tk.W)
-        boton_mostrar.grid(row=1, column=0, columnspan=2, ipadx=30, ipady=6)
-        problemas.grid(row=2, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
-        soluciones.grid(row=2, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.texto_soluciones_s=tk.Text(self.informacion_detallada,relief="groove",width=35,height=3)
+        myscroll1 = tk.Scrollbar(self.informacion_detallada, orient=tk.VERTICAL, command=self.texto_problemas.yview)
+        myscroll2 = tk.Scrollbar(self.informacion_detallada, orient=tk.VERTICAL, command=self.texto_soluciones.yview)
+        myscroll3 = tk.Scrollbar(self.informacion_detallada, orient=tk.VERTICAL, command=self.texto_problemas_s.yview)
+        myscroll4 = tk.Scrollbar(self.informacion_detallada, orient=tk.VERTICAL, command=self.texto_soluciones_s.yview)
+        label_pozos.grid(row=0, column=0,columnspan=2, sticky=tk.N + tk.S + tk.E)
+        self.lista_campos.grid(row=0, column=2,columnspan=2, sticky=tk.N + tk.S + tk.W)
+        boton_mostrar.grid(row=1, column=0, columnspan=4, ipadx=30, ipady=6)
+        problemas.grid(row=2, column=0,columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        soluciones.grid(row=2, column=2,columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
         self.texto_problemas.grid(row=3, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
-        self.texto_soluciones.grid(row=3, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
-        problemas_s.grid(row=4, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
-        soluciones_s.grid(row=4, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
+        myscroll1.grid(row=3, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.texto_soluciones.grid(row=3, column=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        myscroll2.grid(row=3, column=3, sticky=tk.N + tk.S + tk.W + tk.E)
+        problemas_s.grid(row=4, column=0,columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        soluciones_s.grid(row=4, column=2,columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
         self.texto_problemas_s.grid(row=5, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
-        self.texto_solciones_s.grid(row=5,column=1, sticky=tk.N + tk.S + tk.W + tk.E)
+        myscroll3.grid(row=5, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.texto_soluciones_s.grid(row=5,column=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        myscroll4.grid(row=5, column=3, sticky=tk.N + tk.S + tk.W + tk.E)
 
     def mostrar_info_detallada(self):
         if(len(self.lista_campos.get())==0):
@@ -451,26 +462,45 @@ class Application(tk.Frame):
             soluciones=self.ordenar_texto_indices(matrix[2][1])
             problemas_s=self.ordenar_texto_indices(matrix[3][1])
             soluciones_s=self.ordenar_texto_indices(matrix[4][1])
-            #self.informacion_detallada.update_idletasks() # Con esto actualizo la informacion de la ventana como el tamaño y demas
-            n=round(0.1*self.informacion_detallada.winfo_width())
-            n=30
-            self.texto_problemas.config(text=self.seccionado_texto(problemas,n),justify=tk.LEFT)
-            self.texto_soluciones.config(text=self.seccionado_texto(soluciones,n),justify=tk.LEFT)
-            self.texto_problemas_s.config(text=self.seccionado_texto(problemas_s,n),justify=tk.LEFT)
-            self.texto_solciones_s.config(text=self.seccionado_texto(soluciones_s,n),justify=tk.LEFT)
+            self.informacion_detallada.update_idletasks() # Con esto actualizo la informacion de la ventana como el tamaño y demas
+            caracteres=round(0.0854166*self.informacion_detallada.winfo_width())
+            lineas=round(0.0171296*self.informacion_detallada.winfo_height())
+            self.texto_problemas.delete(1.0,tk.END)
+            self.texto_soluciones.delete(1.0,tk.END)
+            self.texto_problemas_s.delete(1.0,tk.END)
+            self.texto_soluciones_s.delete(1.0,tk.END)
+            self.texto_problemas.config(width=caracteres,height=lineas)
+            self.texto_soluciones.config(width=caracteres, height=lineas)
+            self.texto_problemas_s.config(width=caracteres, height=lineas)
+            self.texto_soluciones_s.config(width=caracteres, height=lineas)
+            self.texto_problemas.insert(tk.END,problemas)
+            self.texto_soluciones.insert(tk.END,soluciones)
+            self.texto_problemas_s.insert(tk.END,problemas_s)
+            self.texto_soluciones_s.insert(tk.END,soluciones_s)
+            """self.texto_problemas.config(state=tk.DISABLED)
+            self.texto_soluciones.config(state=tk.DISABLED)
+            self.texto_problemas_s.config(state=tk.DISABLED)
+            self.texto_soluciones_s.config(state=tk.DISABLED)"""
 
     def seccionado_texto(self,texto,n): #Funcion que secciona el texto para que salga  completo
         i=0
         while(i+n<len(texto)+1):
             if(texto.find('\n',i)==-1):
+                for j in range(1,int(ceil(len(texto)/n))):
+                    mit1 = texto[0:i + n * j + 1]
+                    mit2 = texto[i + n * j + 1:len(texto) + 1]
+                    texto = mit1 + "\n" + mit2
                 break
             else:
                 indice=texto.find('\n',i)
             if(indice-i > n):
-                mit1=texto[0:i+n+1]
-                mit2=texto[i+n+1:len(texto)+1]
-                texto=mit1+"\n"+mit2
-                i=i+n
+                j=1
+                while(j<=ceil((indice-i)/n)):
+                    mit1=texto[0:i+n*j+1]
+                    mit2=texto[i+n*j+1:len(texto)+1]
+                    texto=mit1+"\n"+mit2
+                    j=j+1
+                i=i+n*j
             else:
                 i=indice+2
         return texto
@@ -480,7 +510,8 @@ class Application(tk.Frame):
         letras=list(range(65,91))
         numeros=list(range(48,58))
         memoria=0
-        for i in range(2,len(texto)):
+        i=2
+        while(i<len(texto)):
             if(memoria):
                 if(ord(texto[i]) in indicador):
                     mit1=texto[0:i-1]
@@ -492,6 +523,7 @@ class Application(tk.Frame):
             else:
                 if(ord(texto[i]) in letras or ord(texto[i]) in numeros):
                     memoria=1
+            i = i + 1
         return texto
 
 app=Application()
