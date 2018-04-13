@@ -477,33 +477,6 @@ class Application(tk.Frame):
             self.texto_soluciones.insert(tk.END,soluciones)
             self.texto_problemas_s.insert(tk.END,problemas_s)
             self.texto_soluciones_s.insert(tk.END,soluciones_s)
-            """self.texto_problemas.config(state=tk.DISABLED)
-            self.texto_soluciones.config(state=tk.DISABLED)
-            self.texto_problemas_s.config(state=tk.DISABLED)
-            self.texto_soluciones_s.config(state=tk.DISABLED)"""
-
-    def seccionado_texto(self,texto,n): #Funcion que secciona el texto para que salga  completo
-        i=0
-        while(i+n<len(texto)+1):
-            if(texto.find('\n',i)==-1):
-                for j in range(1,int(ceil(len(texto)/n))):
-                    mit1 = texto[0:i + n * j + 1]
-                    mit2 = texto[i + n * j + 1:len(texto) + 1]
-                    texto = mit1 + "\n" + mit2
-                break
-            else:
-                indice=texto.find('\n',i)
-            if(indice-i > n):
-                j=1
-                while(j<=ceil((indice-i)/n)):
-                    mit1=texto[0:i+n*j+1]
-                    mit2=texto[i+n*j+1:len(texto)+1]
-                    texto=mit1+"\n"+mit2
-                    j=j+1
-                i=i+n*j
-            else:
-                i=indice+2
-        return texto
 
     def ordenar_texto_indices(self,texto): #Funcion que se encarga de ordenar bonito los numerales como 1) o A.
         indicador=[41,46]
