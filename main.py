@@ -320,10 +320,10 @@ class Application(tk.Frame):
                                 fila.append(1.0 if matrix_datos[i][j] in matrix_comparar[i][1] else 0)
                             else:
                                 fila.append(1.0 if matrix_comparar[i][1] in matrix_datos[i][j] else 0)
-                        elif (type(matrix_datos[i][j]=='')):
+                        elif (matrix_datos[i][j]==''):
                             fila.append(0)
                         else:
-                            fila.append(1-(matrix_diferencias[i][j]/max([matrix_diferencias[i][k] for k in range(1,len(matrix_diferencias[0]))])))
+                            fila.append(1.0-(matrix_diferencias[i][j]*1.0/max([matrix_diferencias[i][k] for k in range(1,len(matrix_diferencias[0]))])))
                 matrix_resultado.append(fila)
             return matrix_resultado,matrix_comparar,matrix_datos
         else:
@@ -438,18 +438,18 @@ class Application(tk.Frame):
         label_pozos.grid(row=0, column=0,columnspan=2, sticky=tk.N + tk.S + tk.E)
         self.lista_campos.grid(row=0, column=2,columnspan=2, sticky=tk.N + tk.S + tk.W)
         boton_mostrar.grid(row=1, column=0, columnspan=4, ipadx=30, ipady=6)
-        problemas.grid(row=2, column=0,columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
-        soluciones.grid(row=2, column=2,columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
-        self.texto_problemas.grid(row=3, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
-        myscroll1.grid(row=3, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
-        self.texto_soluciones.grid(row=3, column=2, sticky=tk.N + tk.S + tk.W + tk.E)
-        myscroll2.grid(row=3, column=3, sticky=tk.N + tk.S + tk.W + tk.E)
-        problemas_s.grid(row=4, column=0,columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
-        soluciones_s.grid(row=4, column=2,columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
-        self.texto_problemas_s.grid(row=5, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
-        myscroll3.grid(row=5, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
-        self.texto_soluciones_s.grid(row=5,column=2, sticky=tk.N + tk.S + tk.W + tk.E)
-        myscroll4.grid(row=5, column=3, sticky=tk.N + tk.S + tk.W + tk.E)
+        problemas.grid(row=4, column=0,columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        soluciones.grid(row=4, column=2,columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.texto_problemas.grid(row=5, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
+        myscroll1.grid(row=5, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.texto_soluciones.grid(row=5, column=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        myscroll2.grid(row=5, column=3, sticky=tk.N + tk.S + tk.W + tk.E)
+        problemas_s.grid(row=2, column=0,columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        soluciones_s.grid(row=2, column=2,columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.texto_problemas_s.grid(row=3, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
+        myscroll3.grid(row=3, column=1, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.texto_soluciones_s.grid(row=3,column=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        myscroll4.grid(row=3, column=3, sticky=tk.N + tk.S + tk.W + tk.E)
 
     def mostrar_info_detallada(self):
         if(len(self.lista_campos.get())==0):
