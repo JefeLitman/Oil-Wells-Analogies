@@ -7,7 +7,7 @@ class base_datos():
         self.datos=pd.DataFrame()
 
     def cargar_datos(self): #Funcion que retorna los datos de la base de datos ordenados y listos para trabajar
-        self.datos=pd.read_csv("base_datos.csv",header=None) #Con este comando podemos leer la base de datos del excel que fue exportado a csv
+        self.datos=pd.read_csv("AppData/Data/base_datos.csv",header=None) #Con este comando podemos leer la base de datos del excel que fue exportado a csv
         # #Funcion para renombrar las columnas y filas de la base de datos para que quede mas bonita
         for i in range(2,self.datos.shape[0],1):
             if (str(self.datos.at[i, 0]) == 'nan'):
@@ -27,6 +27,13 @@ class base_datos():
                 if (str(self.datos.at[i,j])=='nan'):
                     self.datos.at[i,j]=""
         return self.datos # Retorno de los datos ordenados y arreglados
+
+    def guardar_cambios_datos(self): #Funcion que guarda los cambios en la base de datos
+        for i in range(self.datos.shape[0]):
+            for j in range(self.datos.shape[1]):
+                if (str(self.datos.at[i, j]) == 'nan'):
+                    self.datos.at[i, j] = ''
+        self.datos.to_csv("AppData/Data/base_datos.csv",header=None,index=None)
 
     def conversion_excel(self,datos_a_convertir,filedirectory):
         if (filedirectory != ''):
@@ -66,6 +73,16 @@ class base_datos():
                 fila.append(self.datos.at[i, j])
             busqueda.append(fila)
         return busqueda
+
+    def set_valores_pozo(self,datos,pozo): #Funcion que sirve para actualizar los datos de la base de datos
+        cols=[]
+        for i in range(0,self.datos.shape[1],1):
+            if (self.datos.at[0, i] == pozo):
+                cols.append(i)
+        for i in range(2,self.datos.shape[0],1):
+            for j in range(0,len(cols)):
+                self.datos.at[i,cols[j]]=datos[i-2,j]
+        self.guardar_cambios_datos()
 
     def lista_propiedades_analogia(self): #Funcion que retorna las propiedades y unidades para realizar la analogia
         propiedades = [
@@ -195,7 +212,9 @@ class base_datos():
             "Problemas ",
             "Soluciones",
             "Problemas estandar",
-            "Soluciones estandar"
+            "Soluciones estandar",
+            "Metodos para detectar la etapa en laboratorio",
+            "Metodos para detectar la etapa en campo"
         ]
         matrix_valores = []
         for i in range(1 + len(propiedades)):
@@ -217,3 +236,91 @@ class base_datos():
                     fila.append(self.datos.at[indice_fila,indice_columna])
             matrix_valores.append(fila)
         return matrix_valores
+
+    def get_datos_ignicion_pozo(self,pozo):
+        propiedades=[
+            "Tipo de ignicion",
+            "Propiedades del tipo de ignicion",
+            "Tipo de combustion a analizar",
+            "Velocidad del frente de combustion campo",
+            "Velocidad del frente de combustion laboratorio",
+            "Tiempo de ignicion laboratorio",
+            "Tiempo de Ignicion campo",
+            "Distancia entre los pozos de observacion e inyectores",
+            "Distancia entre los pozos de produccion e inyectores",
+            "Contenido del fluido de combustible en el sistema roca-fluido",
+            "Consumo del  combustible en laboratorio",
+            "Consumo del  combustible en campo",
+            "Eficiencia de la utilizacion de oxigeno campo",
+            "Eficiencia de la utilizacion de oxigeno laboratorio"
+        ]
+        matrix_valores = []
+        for i in range(1 + len(propiedades)):
+            fila = []
+            for j in range(2):
+                if (j == 0 and i == 0):
+                    fila.append('Campo')
+                elif (i == 0 and j != 0):
+                    fila.append(pozo)
+                elif (j == 0 and i != 0):
+                    fila.append(propiedades[i - 1])
+                else:
+                    for k in range(self.datos.shape[0]):
+                        if (self.datos.at[k, 1] == fila[0]):
+                            indice_fila = k
+                    for l in range(3, self.datos.shape[1] - 1, 3):
+                        if (self.datos.at[0, l] == pozo):
+                            indice_columna = l
+                    fila.append(self.datos.at[indice_fila, indice_columna])
+            matrix_valores.append(fila)
+        return matrix_valores
+
+    def agregar_campo_nuevo(self,nombre_pozo,datos):
+        matrix_datos=[]
+        for i in range(0,len(datos)+2):
+            fila=[]
+            for j in range(3):
+                if(i==0):
+                    fila.append(nombre_pozo)
+                elif(i==1):
+                    fila.append(self.datos.at[1,j+2])
+                else:
+                    fila.append(datos[i-2][j])
+            matrix_datos.append(fila)
+        matrix_datos=np.asarray(matrix_datos)
+        columna_unidades = []
+        columna_valores = []
+        columna_fecha = []
+        for i in range(matrix_datos.shape[0]):
+            columna_unidades.append([matrix_datos[i, 0]])
+            columna_valores.append([matrix_datos[i, 1]])
+            columna_fecha.append([matrix_datos[i, 2]])
+        columna_unidades = np.asarray(columna_unidades)
+        columna_valores = np.asarray(columna_valores)
+        columna_fecha = np.asarray(columna_fecha)
+        data=self.datos.values
+        data=np.append(data,columna_unidades,axis=1)
+        data = np.append(data, columna_valores, axis=1)
+        data = np.append(data, columna_fecha, axis=1)
+        self.datos=pd.DataFrame(data)
+        self.guardar_cambios_datos()
+
+    def get_propiedades_unidades(self): #Funcion que retorna todas las propiedades con las unidades correspondientes
+        matrix_nuevo_campo=[]
+        fila=[]
+        for j in range(1,5):
+            fila.append(self.datos.at[1,j])
+        matrix_nuevo_campo.append(fila)
+        for i in range(2,self.datos.shape[0]):
+            fila=[self.datos.at[i,1],self.get_unidades_propiedad(self.datos.at[i,1]),'','']
+            matrix_nuevo_campo.append(fila)
+        return matrix_nuevo_campo
+
+    def get_unidades_propiedad(self,propiedad): #Funcion que encuentra las unidades de determinada propiedad
+        retornar=''
+        for i in range(2,self.datos.shape[0]):
+            if(self.datos.at[i,1]==propiedad):
+                for j in range(2,self.datos.shape[1],3):
+                    if(self.datos.at[i,j]!=''):
+                        retornar=self.datos.at[i,j]
+        return retornar
