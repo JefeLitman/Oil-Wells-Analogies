@@ -5,6 +5,7 @@ from tkinter import ttk
 from tkinter import messagebox,filedialog
 from AppData.Scripts.funciones import base_datos as bd
 from pandastable import Table
+import tkinter.font as tkFont
 
 class Application(tk.Frame):
     def __init__(self,master=None):
@@ -16,6 +17,7 @@ class Application(tk.Frame):
         top.rowconfigure(0,weight=1)
         top.rowconfigure(1, weight =1)
         top.columnconfigure(0, weight =1)
+        self.letra = tkFont.Font(family="Lucida Sans",size=12,weight="normal")
         self.createWidgets()
 
     def createWidgets(self): #Ventana principal
@@ -168,21 +170,21 @@ class Application(tk.Frame):
     def ventana_analogia(self): #Ventana para realizar el modulo de una analogia
         self.analogia = tk.Toplevel()
         self.analogia.title("Modulo para realizar analogia de un nuevo campo")
-        self.analogia.geometry("850x325+70+30")
+        self.analogia.geometry("1250x325+70+30")
         self.analogia.config(bg="#fff")
         self.analogia.grid()
         for i in range(0, 11):
             self.analogia.rowconfigure(i, weight=1)
         for i in range(0, 6):
             self.analogia.columnconfigure(i, weight=1)
-        self.nombre_pozo = tk.Label(self.analogia, text="Nombre del campo:", bg="#E8F06B", relief="groove")
-        self.campo_nombre_pozo  = tk.Entry(self.analogia,bg="#E2EBC8",relief="groove",justify=tk.CENTER)
-        self.propiedades = tk.Label(self.analogia, text="Propiedades para analogia", bg="#E8F06B", relief="groove")
-        self.unidades = tk.Label(self.analogia, text="Unidades", bg="#E8F06B", relief="groove")
-        self.puntual = tk.Label(self.analogia, text="Valor único", bg="#E8F06B", relief="groove")
-        self.min = tk.Label(self.analogia, text="Valor minimo", bg="#E8F06B", relief="groove")
-        self.max = tk.Label(self.analogia, text="Valor maximo", bg="#E8F06B", relief="groove")
-        self.ponderacion = tk.Label(self.analogia, text="Ponderacion(%)", bg="#E8F06B", relief="groove")
+        self.nombre_pozo = tk.Label(self.analogia, text="Nombre del campo:", bg="#E8F06B", relief="groove",font=self.letra)
+        self.campo_nombre_pozo  = tk.Entry(self.analogia,bg="#E2EBC8",relief="groove",justify=tk.CENTER,font=self.letra)
+        self.propiedades = tk.Label(self.analogia, text="Propiedades para analogia", bg="#E8F06B", relief="groove",font=self.letra)
+        self.unidades = tk.Label(self.analogia, text="Unidades", bg="#E8F06B", relief="groove",font=self.letra)
+        self.puntual = tk.Label(self.analogia, text="Valor único", bg="#E8F06B", relief="groove",font=self.letra)
+        self.min = tk.Label(self.analogia, text="Valor minimo", bg="#E8F06B", relief="groove",font=self.letra)
+        self.max = tk.Label(self.analogia, text="Valor maximo", bg="#E8F06B", relief="groove",font=self.letra)
+        self.ponderacion = tk.Label(self.analogia, text="Ponderacion(%)", bg="#E8F06B", relief="groove",font=self.letra)
         self.nombre_pozo.grid(row=0, column=0, columnspan=3, sticky=tk.N + tk.S + tk.E + tk.W)
         self.campo_nombre_pozo.grid(row=0, column=3, columnspan=3, sticky=tk.N + tk.S + tk.W + tk.E)
         self.propiedades.grid(row=1, column=0, sticky=tk.N + tk.S + tk.W + tk.E)
@@ -193,21 +195,21 @@ class Application(tk.Frame):
         self.ponderacion.grid(row=1, column=5, sticky=tk.N + tk.S + tk.W + tk.E)
         propi_unida = self.clase_base_de_datos.lista_propiedades_analogia() #Obtengo la matriz con las propiedades y unidades
         for i in range(0,len(propi_unida[0])):
-            propiedad = tk.Label(self.analogia,text=propi_unida[0][i],bg="#76F072",relief="groove")
-            unidades = tk.Label(self.analogia,text=propi_unida[1][i],bg="#76F072",relief="groove")
+            propiedad = tk.Label(self.analogia,text=propi_unida[0][i],bg="#76F072",relief="groove",font=self.letra)
+            unidades = tk.Label(self.analogia,text=propi_unida[1][i],bg="#76F072",relief="groove",font=self.letra)
             propiedad.grid(row=2+i,column=0,sticky=tk.N + tk.S + tk.W + tk.E)
             unidades.grid(row=2+i,column=1,sticky=tk.N + tk.S + tk.W + tk.E)
         self.matrix_valores=[]
         for j in range(0,4):
             columna=[]
             for i in range(0,8):
-                valor_ingresar = tk.Entry(self.analogia,bg="#E2EBC8",justify=tk.CENTER,relief="groove")
+                valor_ingresar = tk.Entry(self.analogia,bg="#E2EBC8",justify=tk.CENTER,relief="groove",font=self.letra)
                 valor_ingresar.grid(row=2+i, column=2+j, sticky=tk.N + tk.S + tk.W + tk.E)
                 columna.append(valor_ingresar)
             self.matrix_valores.append(columna)
-        self.boton_ponderado = tk.Button(self.analogia,text="Establecer Ponderaciones",command=self.set_ponderaciones)
-        self.boton_analogia_promedio = tk.Button(self.analogia,text="Realizar Analogia por Valor Promedio",command=self.resultado_analogia_promedio)
-        self.boton_analogia_jaccard = tk.Button(self.analogia,text="Realizar Analogia por Jaccard",command=self.resultado_analogia_jaccard)
+        self.boton_ponderado = tk.Button(self.analogia,text="Establecer Ponderaciones",command=self.set_ponderaciones,font=self.letra)
+        self.boton_analogia_promedio = tk.Button(self.analogia,text="Realizar Analogia por Valor Promedio",command=self.resultado_analogia_promedio,font=self.letra)
+        self.boton_analogia_jaccard = tk.Button(self.analogia,text="Realizar Analogia por Jaccard",command=self.resultado_analogia_jaccard,font=self.letra)
         self.boton_ponderado.grid(row=10,column=0,columnspan=2)
         self.boton_analogia_promedio.grid(row=10,column=2,columnspan=2)
         self.boton_analogia_jaccard.grid(row=10,column=4,columnspan=2)
@@ -261,6 +263,9 @@ class Application(tk.Frame):
         self.frame_tabla_analogia=tk.Frame(self.resultado_analogia)
         matrix_mostrar=np.asarray(matrix_mostrar)
         self.df_matrix=pd.DataFrame(data=matrix_mostrar[1:,:],columns=matrix_mostrar[0,:])
+        self.df_matrix = self.df_matrix.sort_values(by=["Puntaje(%)"], ascending=False)
+        self.df_matrix = self.df_matrix.reindex(
+            index=np.append(self.df_matrix.index.values[-1], self.df_matrix.index.values[:-1]))
         self.tabla_analogia=Table(self.frame_tabla_analogia,dataframe=self.df_matrix,showstatusbar=False,showtoolbar=False)
         self.tabla_analogia.show()
         self.frame_tabla_analogia.grid(row=0,column=0,columnspan=2,sticky=tk.N+tk.S+tk.W+tk.E)
@@ -309,6 +314,8 @@ class Application(tk.Frame):
         self.frame_tabla_analogia = tk.Frame(self.resultado_analogia)
         matrix_mostrar = np.asarray(matrix_mostrar)
         self.df_matrix = pd.DataFrame(data=matrix_mostrar[1:, :], columns=matrix_mostrar[0, :])
+        self.df_matrix=self.df_matrix.sort_values(by=["Puntaje(%)"],ascending=False)
+        self.df_matrix = self.df_matrix.reindex(index=np.append(self.df_matrix.index.values[-1],self.df_matrix.index.values[:-1]))
         self.tabla_analogia = Table(self.frame_tabla_analogia, dataframe=self.df_matrix, showstatusbar=False,showtoolbar=False)
         self.tabla_analogia.show()
         self.frame_tabla_analogia.grid(row=0, column=0, columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
@@ -355,7 +362,7 @@ class Application(tk.Frame):
                         elif (matrix_datos[i][j]==''):
                             fila.append(0)
                         else:
-                            fila.append(matrix_diferencias[i][j]*1.0 / max([matrix_diferencias[i][k] for k in range(1,len(matrix_diferencias[0]))]))
+                            fila.append(1-(matrix_diferencias[i][j]*1.0 / max([matrix_diferencias[i][k] for k in range(1,len(matrix_diferencias[0]))])))
                 matrix_resultado.append(fila)
             return matrix_resultado,matrix_comparar,matrix_datos
         else:
