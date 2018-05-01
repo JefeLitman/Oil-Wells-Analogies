@@ -263,9 +263,7 @@ class Application(tk.Frame):
         self.frame_tabla_analogia=tk.Frame(self.resultado_analogia)
         matrix_mostrar=np.asarray(matrix_mostrar)
         self.df_matrix=pd.DataFrame(data=matrix_mostrar[1:,:],columns=matrix_mostrar[0,:])
-        self.df_matrix = self.df_matrix.sort_values(by=["Puntaje(%)"], ascending=False)
-        self.df_matrix = self.df_matrix.reindex(
-            index=np.append(self.df_matrix.index.values[-1], self.df_matrix.index.values[:-1]))
+        self.df_matrix = self.df_matrix.reindex(index=self.ordenar_dataframe())
         self.tabla_analogia=Table(self.frame_tabla_analogia,dataframe=self.df_matrix,showstatusbar=False,showtoolbar=False)
         self.tabla_analogia.show()
         self.frame_tabla_analogia.grid(row=0,column=0,columnspan=2,sticky=tk.N+tk.S+tk.W+tk.E)
@@ -290,7 +288,7 @@ class Application(tk.Frame):
                     if (i != 1):
                         fila.append(str(self.get_valor_resultado(self.resultados, self.datos_pozos[j][i - 1])))
                     else:
-                        fila.append('')
+                        fila.append('100.0')
                 elif (i != 0 and j == 1):
                     if (i == 1):
                         fila.append(self.valores_nuevo_pozo[0][i])
@@ -314,8 +312,7 @@ class Application(tk.Frame):
         self.frame_tabla_analogia = tk.Frame(self.resultado_analogia)
         matrix_mostrar = np.asarray(matrix_mostrar)
         self.df_matrix = pd.DataFrame(data=matrix_mostrar[1:, :], columns=matrix_mostrar[0, :])
-        self.df_matrix=self.df_matrix.sort_values(by=["Puntaje(%)"],ascending=False)
-        self.df_matrix = self.df_matrix.reindex(index=np.append(self.df_matrix.index.values[-1],self.df_matrix.index.values[:-1]))
+        self.df_matrix = self.df_matrix.reindex(index=self.ordenar_dataframe())
         self.tabla_analogia = Table(self.frame_tabla_analogia, dataframe=self.df_matrix, showstatusbar=False,showtoolbar=False)
         self.tabla_analogia.show()
         self.frame_tabla_analogia.grid(row=0, column=0, columnspan=2, sticky=tk.N + tk.S + tk.W + tk.E)
@@ -621,6 +618,16 @@ class Application(tk.Frame):
             texto_soluciones.insert(tk.END, self.ordenar_texto_indices(matrix[2][1]))
             texto_metodos1.insert(tk.END, self.ordenar_texto_indices(matrix[5][1]))
             texto_metodos2.insert(tk.END, self.ordenar_texto_indices(matrix[6][1]))
+
+    def ordenar_dataframe(self):
+        filas=list(self.df_matrix["Puntaje(%)"].values)
+        for i in range(len(filas)):
+            filas[i]=[float(filas[i]),i]
+        filas=sorted(filas,reverse=True)
+        indices=[]
+        for i in range(len(filas)):
+            indices.append(filas[i][1])
+        return indices
 
 app=Application()
 app.master.title("SOFTWARE D.I.S")
