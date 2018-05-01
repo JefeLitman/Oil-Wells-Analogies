@@ -239,7 +239,7 @@ class Application(tk.Frame):
                     if(i!=1):
                         fila.append(str(self.get_valor_resultado(self.resultados,self.datos_pozos[j][i-1])))
                     else:
-                        fila.append('')
+                        fila.append('100.0')
                 elif(i!=0 and j==1):
                     if(i==1):
                         fila.append(self.valores_nuevo_pozo[0][i])
